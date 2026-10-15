@@ -1,0 +1,160 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Escandallo Estética - Billing & Subscriptions API",
+    "version": "1.1.0",
+    "description": "API contract for Freemium quotas, Stripe Checkout, Customer Portal, webhook processing, and local Mock/Fake testing"
+  },
+  "paths": {
+    "/api/v1/billing/status": {
+      "get": {
+        "summary": "Get subscription plan and active escandallos quota for center",
+        "operationId": "getSubscriptionStatus",
+        "responses": {
+          "200": {
+            "description": "Subscription quota details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubscriptionStatusDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/billing/checkout": {
+      "post": {
+        "summary": "Create Checkout session for monthly/annual Premium plan (Stripe or Mock URL according to provider)",
+        "operationId": "createCheckoutSession",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCheckoutRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Checkout session URL (Stripe official URL or internal Mock checkout page)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["checkoutUrl", "isMockProvider"],
+                  "properties": {
+                    "checkoutUrl": { "type": "string", "format": "uri" },
+                    "isMockProvider": { "type": "boolean" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/billing/stripe-webhook": {
+      "post": {
+        "summary": "Stripe webhook ingestion endpoint (HMAC-SHA256 signature verified)",
+        "operationId": "processStripeWebhook",
+        "parameters": [
+          {
+            "name": "Stripe-Signature",
+            "in": "header",
+            "required": true,
+            "schema": { "type": "string" },
+            "description": "HMAC-SHA256 signature and timestamp emitted by Stripe"
+          }
+        ],
+        "responses": {
+          "200": { "description": "Webhook processed or ignored idempotently" },
+          "400": { "description": "Invalid signature or expired timestamp window (> 300s)" }
+        }
+      }
+    },
+    "/api/v1/billing/mock-complete-checkout": {
+      "post": {
+        "summary": "MOCK ONLY: Simulate instant payment success and upgrade active center to Premium",
+        "description": "Available only when Billing:Provider is 'Fake'. Returns 404 in Production.",
+        "operationId": "mockCompleteCheckout",
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MockCompleteCheckoutRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Subscription upgraded to Premium successfully via mock",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubscriptionStatusDto"
+                }
+              }
+            }
+          },
+          "404": { "description": "Endpoint disabled in production environment" }
+        }
+      }
+    },
+    "/api/v1/billing/mock-cancel-subscription": {
+      "post": {
+        "summary": "MOCK ONLY: Simulate subscription cancellation and downgrade active center to Free",
+        "description": "Available only when Billing:Provider is 'Fake'. Returns 404 in Production.",
+        "operationId": "mockCancelSubscription",
+        "responses": {
+          "200": {
+            "description": "Subscription downgraded to Free successfully via mock",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubscriptionStatusDto"
+                }
+              }
+            }
+          },
+          "404": { "description": "Endpoint disabled in production environment" }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "SubscriptionStatusDto": {
+        "type": "object",
+        "required": ["plan", "activeEscandallos", "maxAllowedEscandallos", "canCreateMore", "isMockProvider"],
+        "properties": {
+          "plan": { "type": "string", "enum": ["Free", "Premium"] },
+          "activeEscandallos": { "type": "integer" },
+          "maxAllowedEscandallos": { "type": "integer", "description": "2 for Free plan, 999999 for Premium" },
+          "canCreateMore": { "type": "boolean" },
+          "isMockProvider": { "type": "boolean", "description": "True when FakeSubscriptionGateway is active" },
+          "renewsAtUtc": { "type": "string", "format": "date-time", "nullable": true }
+        }
+      },
+      "CreateCheckoutRequest": {
+        "type": "object",
+        "required": ["billingCycle"],
+        "properties": {
+          "billingCycle": { "type": "string", "enum": ["monthly", "annual"] }
+        }
+      },
+      "MockCompleteCheckoutRequest": {
+        "type": "object",
+        "properties": {
+          "billingCycle": { "type": "string", "enum": ["monthly", "annual"], "default": "monthly" },
+          "simulatedCustomerId": { "type": "string", "default": "cus_mock_test_123" }
+        }
+      }
+    }
+  }
+}

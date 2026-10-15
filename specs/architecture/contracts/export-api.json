@@ -1,0 +1,48 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Escandallo Estética - Document Export API",
+    "version": "1.0.0",
+    "description": "API contract for executive styled document generation (PDF and XLSX) within sandboxed environment"
+  },
+  "paths": {
+    "/api/v1/export/pdf": {
+      "get": {
+        "summary": "Export center escandallos in executive PDF format",
+        "operationId": "exportPdfReport",
+        "responses": {
+          "200": {
+            "description": "Binary PDF document stream",
+            "content": {
+              "application/pdf": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/export/xlsx": {
+      "get": {
+        "summary": "Export center escandallos in sanitized XLSX format",
+        "operationId": "exportExcelReport",
+        "responses": {
+          "200": {
+            "description": "Binary XLSX document stream with anti-formula injection shielding",
+            "content": {
+              "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

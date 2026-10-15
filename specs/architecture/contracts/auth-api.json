@@ -1,0 +1,137 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Escandallo Estética - Auth & Multi-Tenant API",
+    "version": "1.0.0",
+    "description": "API contract for authentication, session verification and center selection"
+  },
+  "paths": {
+    "/api/v1/auth/login": {
+      "post": {
+        "summary": "Authenticate user credentials",
+        "operationId": "loginUser",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credentials"
+          },
+          "429": {
+            "description": "Too many failed attempts (rate limited)"
+          }
+        }
+      }
+    },
+    "/api/v1/auth/centers": {
+      "get": {
+        "summary": "List authorized aesthetic centers for the authenticated user",
+        "operationId": "getAuthorizedCenters",
+        "responses": {
+          "200": {
+            "description": "List of authorized centers",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CenterMembershipDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/select-center": {
+      "post": {
+        "summary": "Set active aesthetic center for the session",
+        "operationId": "selectActiveCenter",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SelectCenterRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Active center updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "User is not authorized for the requested center"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "LoginRequest": {
+        "type": "object",
+        "required": ["email", "password"],
+        "properties": {
+          "email": { "type": "string", "format": "email" },
+          "password": { "type": "string", "format": "password" }
+        }
+      },
+      "AuthResponse": {
+        "type": "object",
+        "required": ["token", "expiresIn", "userId", "tenantId", "activeCenterId", "role"],
+        "properties": {
+          "token": { "type": "string" },
+          "expiresIn": { "type": "integer" },
+          "userId": { "type": "string" },
+          "tenantId": { "type": "string" },
+          "activeCenterId": { "type": "string" },
+          "role": { "type": "string", "enum": ["ACT-USER-001", "ACT-GUEST-001", "ACT-MAINTAINER-001"] }
+        }
+      },
+      "CenterMembershipDto": {
+        "type": "object",
+        "required": ["centerId", "name", "role", "isPlanPremium"],
+        "properties": {
+          "centerId": { "type": "string" },
+          "name": { "type": "string" },
+          "role": { "type": "string" },
+          "isPlanPremium": { "type": "boolean" }
+        }
+      },
+      "SelectCenterRequest": {
+        "type": "object",
+        "required": ["centerId"],
+        "properties": {
+          "centerId": { "type": "string" }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,19 @@
+## .NET Core / C#
+bin/
+obj/
+TestResults/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+.vs/
+
+## Playwright
+.playwright/
+
+## Coverage
+coverage/
+
+## OS / Editor
+.DS_Store
+Thumbs.db

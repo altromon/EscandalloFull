@@ -1,0 +1,272 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Escandallo Estética - Escandallo & Margin API",
+    "version": "1.1.0",
+    "description": "API contract for service formulations, escandallo computation, duplication, activation status, and role-based DTO projections with explicit units and percentage points"
+  },
+  "paths": {
+    "/api/v1/escandallos": {
+      "get": {
+        "summary": "List all escandallos in active center (censored for guests)",
+        "operationId": "getEscandallos",
+        "parameters": [
+          {
+            "name": "includeInactive",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "boolean", "default": false }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of escandallos (projected according to caller role)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "oneOf": [
+                      { "$ref": "#/components/schemas/CompleteEscandalloDto" },
+                      { "$ref": "#/components/schemas/GuestEscandalloDto" }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new service formulation / escandallo",
+        "operationId": "createEscandallo",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateEscandalloRequest" }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Escandallo created successfully" },
+          "402": { "description": "Freemium quota exceeded (max 2 active escandallos on Free plan)" }
+        }
+      }
+    },
+    "/api/v1/escandallos/{id}": {
+      "get": {
+        "summary": "Get single escandallo details (censored for guests)",
+        "operationId": "getEscandalloById",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Escandallo details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    { "$ref": "#/components/schemas/CompleteEscandalloDto" },
+                    { "$ref": "#/components/schemas/GuestEscandalloDto" }
+                  ]
+                }
+              }
+            }
+          },
+          "404": { "description": "Escandallo not found in active center" }
+        }
+      }
+    },
+    "/api/v1/escandallos/{id}/duplicate": {
+      "post": {
+        "summary": "Duplicate an existing service formulation",
+        "operationId": "duplicateEscandallo",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "201": {
+            "description": "Service duplicated successfully with 'Copia de ...' prefix",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CompleteEscandalloDto" }
+              }
+            }
+          },
+          "402": { "description": "Freemium quota exceeded (max 2 active escandallos on Free plan)" },
+          "404": { "description": "Source escandallo not found" }
+        }
+      }
+    },
+    "/api/v1/escandallos/{id}/status": {
+      "patch": {
+        "summary": "Toggle active/inactive status of an escandallo",
+        "operationId": "updateEscandalloStatus",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UpdateStatusRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Status updated successfully" },
+          "402": { "description": "Freemium quota exceeded when trying to activate 3rd escandallo on Free plan" },
+          "404": { "description": "Escandallo not found" }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CompleteEscandalloDto": {
+        "type": "object",
+        "required": [
+          "id", "serviceName", "durationMinutes", "taxRatePercentage",
+          "laborCost", "overheadCost", "cosmeticsCost", "totalEscandalloCost",
+          "suggestedBasePrice", "suggestedPvp", "appliedPvr", "netMarginAbsolute",
+          "netMarginPercentage", "trafficLightColor", "isActive", "isDemo"
+        ],
+        "properties": {
+          "id": { "type": "string" },
+          "serviceName": { "type": "string" },
+          "durationMinutes": { "type": "integer", "description": "Unit: min" },
+          "taxRatePercentage": { "type": "number", "enum": [21.0, 10.0, 0.0], "description": "Unit: % (out of 100)" },
+          "workerCategory": { "type": "string" },
+          "laborCost": { "type": "number", "description": "Unit: EUR (hidden from guests)" },
+          "overheadCost": { "type": "number", "description": "Unit: EUR (hidden from guests)" },
+          "cosmeticsCost": { "type": "number", "description": "Unit: EUR" },
+          "totalEscandalloCost": { "type": "number", "description": "Unit: EUR" },
+          "suggestedBasePrice": { "type": "number", "description": "Unit: EUR (50% markup)" },
+          "suggestedPvp": { "type": "number", "description": "Unit: EUR (with VAT)" },
+          "appliedPvr": { "type": "number", "description": "Unit: EUR (actual retail price with VAT)" },
+          "netMarginAbsolute": { "type": "number", "description": "Unit: EUR (net absolute profit per session)" },
+          "netMarginPercentage": { "type": "number", "description": "Unit: % (0.0 to 100.0, net margin on sales)" },
+          "trafficLightColor": { "type": "string", "enum": ["verde", "amarillo", "rojo"] },
+          "lossWarningMessage": {
+            "type": "string",
+            "nullable": true,
+            "description": "Explicit warning if netMarginAbsolute < 0 (e.g. 'Atención: Estás perdiendo 9.92 € por cada sesión')"
+          },
+          "isActive": { "type": "boolean", "description": "Controls active status within freemium quota" },
+          "isDemo": { "type": "boolean" },
+          "packs": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/SessionPackDto" }
+          },
+          "consumables": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ConsumableUsageDto" }
+          }
+        }
+      },
+      "SessionPackDto": {
+        "type": "object",
+        "required": [
+          "id", "packName", "sessionCount", "totalPackPrice", "effectiveSessionPriceWithoutTax",
+          "netMarginPercentage", "trafficLightColor"
+        ],
+        "properties": {
+          "id": { "type": "string" },
+          "packName": { "type": "string", "example": "Bono 5 Sesiones" },
+          "sessionCount": { "type": "integer", "minimum": 2, "example": 5 },
+          "totalPackPrice": { "type": "number", "description": "Unit: EUR (with VAT)" },
+          "effectiveSessionPriceWithoutTax": { "type": "number", "description": "Unit: EUR (per session revenue without VAT)" },
+          "netMarginPercentage": { "type": "number", "description": "Unit: % (tanto por 100)" },
+          "trafficLightColor": { "type": "string", "enum": ["verde", "amarillo", "rojo"] },
+          "lossWarningMessage": { "type": "string", "nullable": true }
+        }
+      },
+      "GuestEscandalloDto": {
+        "type": "object",
+        "description": "Strictly censored DTO for ACT-GUEST-001 (BR-GUEST-CENSOR-001)",
+        "required": [
+          "id", "serviceName", "durationMinutes", "trafficLightColor", "isActive", "consumables"
+        ],
+        "properties": {
+          "id": { "type": "string" },
+          "serviceName": { "type": "string" },
+          "durationMinutes": { "type": "integer", "description": "Unit: min" },
+          "trafficLightColor": { "type": "string", "enum": ["verde", "amarillo", "rojo"] },
+          "isActive": { "type": "boolean" },
+          "packs": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/GuestSessionPackDto" }
+          },
+          "consumables": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/GuestConsumableUsageDto" }
+          }
+        }
+      },
+      "GuestSessionPackDto": {
+        "type": "object",
+        "required": ["id", "packName", "sessionCount", "totalPackPrice", "trafficLightColor"],
+        "properties": {
+          "id": { "type": "string" },
+          "packName": { "type": "string" },
+          "sessionCount": { "type": "integer" },
+          "totalPackPrice": { "type": "number", "description": "Unit: EUR" },
+          "trafficLightColor": { "type": "string", "enum": ["verde", "amarillo", "rojo"] }
+        }
+      },
+      "ConsumableUsageDto": {
+        "type": "object",
+        "required": ["productId", "productName", "amountUsed", "unitOfMeasure", "computedCost"],
+        "properties": {
+          "productId": { "type": "string" },
+          "productName": { "type": "string" },
+          "amountUsed": { "type": "number" },
+          "unitOfMeasure": { "type": "string", "description": "Unit: ml, g, dosis, unidad" },
+          "computedCost": { "type": "number", "description": "Unit: EUR" }
+        }
+      },
+      "GuestConsumableUsageDto": {
+        "type": "object",
+        "required": ["productId", "productName", "amountUsed", "unitOfMeasure"],
+        "properties": {
+          "productId": { "type": "string" },
+          "productName": { "type": "string" },
+          "amountUsed": { "type": "number" },
+          "unitOfMeasure": { "type": "string" }
+        }
+      },
+      "CreateEscandalloRequest": {
+        "type": "object",
+        "required": ["serviceName", "durationMinutes", "taxRatePercentage", "workerId", "appliedPvr", "consumables"],
+        "properties": {
+          "serviceName": { "type": "string" },
+          "durationMinutes": { "type": "integer", "minimum": 1, "description": "Unit: min" },
+          "taxRatePercentage": { "type": "number", "enum": [21.0, 10.0, 0.0], "description": "Unit: %" },
+          "workerId": { "type": "string" },
+          "appliedPvr": { "type": "number", "minimum": 0, "description": "Unit: EUR" },
+          "isActive": { "type": "boolean", "default": true },
+          "consumables": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["productId", "amountUsed"],
+              "properties": {
+                "productId": { "type": "string" },
+                "amountUsed": { "type": "number", "minimum": 0.01 }
+              }
+            }
+          }
+        }
+      },
+      "UpdateStatusRequest": {
+        "type": "object",
+        "required": ["isActive"],
+        "properties": {
+          "isActive": { "type": "boolean" }
+        }
+      }
+    }
+  }
+}

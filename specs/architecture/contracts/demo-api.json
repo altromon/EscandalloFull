@@ -1,0 +1,79 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Escandallo Estética - Demo Mode API",
+    "version": "1.0.0",
+    "description": "API contract for loading and transactional purging of demonstration data"
+  },
+  "paths": {
+    "/api/v1/demo/status": {
+      "get": {
+        "summary": "Check if active center contains demo data",
+        "operationId": "getDemoStatus",
+        "responses": {
+          "200": {
+            "description": "Demo status details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["hasDemoData", "demoEscandallosCount", "realEscandallosCount"],
+                  "properties": {
+                    "hasDemoData": { "type": "boolean" },
+                    "demoEscandallosCount": { "type": "integer" },
+                    "realEscandallosCount": { "type": "integer" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/demo/load": {
+      "post": {
+        "summary": "Seed standard demo data (Cleasing Milk, Mesodermolifting) with is_demo = true",
+        "operationId": "loadDemoData",
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "overrideIfRealExists": { "type": "boolean", "default": false }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Demo data loaded successfully" },
+          "409": { "description": "Center contains real data and override was not confirmed" }
+        }
+      }
+    },
+    "/api/v1/demo/purge": {
+      "post": {
+        "summary": "Transactionally delete all records with is_demo = true in active center",
+        "operationId": "purgeDemoData",
+        "responses": {
+          "200": {
+            "description": "Demo data purged cleanly",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["purgedRecordsCount"],
+                  "properties": {
+                    "purgedRecordsCount": { "type": "integer" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

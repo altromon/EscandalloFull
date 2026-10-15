@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Escandallo Estética - Rentabilidad y Fijación de Precios</title>
+  <link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+
+  <!-- 1. Navbar con Badge Permanente de Centro Activo (CMP-WEB-UI-001) -->
+  <header class="navbar">
+    <div class="navbar-brand">
+      ✨ <span>Escandallo Estética</span>
+    </div>
+
+    <div style="display: flex; align-items: center; gap: 1rem;">
+      <div class="navbar-center-badge" id="activeCenterBadge">
+        📍 <span id="activeCenterBadgeText">Centro Belleza Madrid (ctr-madrid-1)</span>
+      </div>
+
+      <select class="center-select" id="centerSelect" title="Seleccionar Centro">
+        <option value="ctr-madrid-1">Centro Belleza Madrid</option>
+        <option value="ctr-radiante-1">Centro Radiante</option>
+        <option value="ctr-luz-belleza">Luz y Belleza</option>
+        <option value="ctr-test-free">Centro Free Test</option>
+      </select>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <!-- 2. Banner de Onboarding y Modo Demo (BR-DEMO-DATA-001, MVP-USAB-05) -->
+    <section class="demo-banner">
+      <div>
+        <strong>💡 Entorno de Salón:</strong> Prueba la rentabilidad con tratamientos precargados o limpia para configurar desde cero.
+      </div>
+      <div style="display: flex; gap: 0.5rem;">
+        <button class="btn btn-secondary btn-sm" onclick="handleLoadDemo()">🚀 Cargar datos Demo</button>
+        <button class="btn btn-secondary btn-sm" onclick="handlePurgeDemo()">🗑️ Limpiar Demo</button>
+      </div>
+    </section>
+
+    <!-- 3. Barra de Acciones y Compuerta Freemium (BR-FREEMIUM-LIMIT-001, MVP-USAB-02) -->
+    <section class="action-bar">
+      <div class="quota-indicator">
+        <span id="quotaBadge" class="quota-badge">Escandallos activos: 1/2 (Plan Free)</span>
+      </div>
+
+      <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+        <button class="btn btn-primary" onclick="handleCreateNew()">
+          ➕ Nuevo Escandallo
+        </button>
+        <button class="btn btn-secondary" onclick="handleExportPdf()">
+          📄 Descargar PDF
+        </button>
+        <button class="btn btn-secondary" onclick="handleExportXlsx()">
+          📊 Descargar Excel
+        </button>
+      </div>
+    </section>
+
+    <!-- 4. Cuadrícula Principal: Configuración de Costes y Matriz de Rentabilidad -->
+    <div class="grid-2">
+
+      <!-- Columna Izquierda: Configuración de Gastos Generales (UC-COST-CONFIG-001) -->
+      <aside class="card">
+        <div class="card-title">
+          <span>⚙️ Gastos de Salón</span>
+          <span style="font-size:0.75rem; color:var(--text-muted); font-weight:normal;" id="calcMinutes">10.560 min/mes</span>
+        </div>
+
+        <form id="costsForm" onsubmit="handleSaveCosts(event)">
+          <div class="form-group">
+            <label class="form-label" for="inputHours">Horas apertura al mes (h/mes)</label>
+            <div class="input-with-unit">
+              <input type="number" id="inputHours" value="176" min="1" max="744" step="1" required>
+              <span class="unit-label">h/mes</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="inputRent">Alquiler del local (€/mes)</label>
+            <div class="input-with-unit">
+              <input type="number" id="inputRent" value="335.00" min="0" step="0.01" required>
+              <span class="unit-label">€/mes</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="inputSupplies">Suministros (Luz, agua, internet)</label>
+            <div class="input-with-unit">
+              <input type="number" id="inputSupplies" value="100.00" min="0" step="0.01" required>
+              <span class="unit-label">€/mes</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="inputCabinConsumables">Consumibles generales de cabina</label>
+            <div class="input-with-unit">
+              <input type="number" id="inputCabinConsumables" value="440.00" min="0" step="0.01" required>
+              <span class="unit-label">€/mes</span>
+            </div>
+          </div>
+
+          <div style="background:#f8fafc; padding:0.6rem; border-radius:6px; margin:0.75rem 0; font-size:0.8rem;">
+            Coste indirecto resultante: <strong id="calculatedOverheadMinute">0.08286 €/min</strong>
+          </div>
+
+          <button type="submit" class="btn btn-secondary" style="width:100%; justify-content:center;">
+            💾 Guardar Parámetros
+          </button>
+        </form>
+      </aside>
+
+      <!-- Columna Derecha: Matriz de Servicios y Semáforos (Matriz 4 Estados UI) -->
+      <section class="card">
+        <div class="card-title">
+          <span>📋 Cartera de Servicios y Semáforo de Margen</span>
+        </div>
+
+        <!-- Estado 1: Loading -->
+        <div id="stateLoading" class="state-loading">
+          <div class="spinner"></div>
+          <p>Calculando rentabilidad y cargando tratamientos...</p>
+        </div>
+
+        <!-- Estado 2: Error -->
+        <div id="stateError" class="state-error" style="display:none;">
+          <div>
+            <strong>Error de conexión:</strong> <span id="errorMessageText"></span>
+          </div>
+          <button class="btn btn-danger btn-sm" onclick="loadCenterData()">Reintentar</button>
+        </div>
+
+        <!-- Estado 3: Empty -->
+        <div id="stateEmpty" class="state-empty" style="display:none;">
+          <h4>Sin escandallos en este centro</h4>
+          <p>No tienes tratamientos registrados todavía. Comienza creando uno nuevo o carga la semilla demo.</p>
+          <div style="margin-top:1rem; display:flex; justify-content:center; gap:0.5rem;">
+            <button class="btn btn-primary" onclick="handleCreateNew()">➕ Crear Primer Tratamiento</button>
+            <button class="btn btn-secondary" onclick="handleLoadDemo()">🚀 Cargar Semilla Demo</button>
+          </div>
+        </div>
+
+        <!-- Estado 4: Nominal / Success -->
+        <div id="stateNominal" style="display:none;">
+          <div class="table-responsive">
+            <table>
+              <thead>
+                <tr>
+                  <th>Tratamiento</th>
+                  <th>Tiempo</th>
+                  <th>Coste Escandallo</th>
+                  <th>PVP Sugerido</th>
+                  <th>PVR Cobrado</th>
+                  <th>Margen %</th>
+                  <th>Semáforo</th>
+                  <th>Estado</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="servicesTableBody">
+                <!-- Inyección dinámica -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Modal: Compuerta Freemium y Actualización a Premium -->
+  <div id="upgradeModal" class="modal-overlay" style="display:none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 style="color:#0284c7;">🔒 Límite de Cuota Freemium Alcanzado</h3>
+        <button class="btn btn-secondary btn-sm" onclick="closeUpgradeModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <p>Has alcanzado el límite de <strong>2 escandallos activos</strong> del plan Free.</p>
+        <p style="margin-top:0.5rem;">
+          Para registrar nuevos servicios o duplicar tratamientos, actualiza a <strong>Premium</strong> y disfruta de escandallos ilimitados, o pausa uno de los tratamientos actuales para liberar tu cuota gratuita.
+        </p>
+        <div style="background:#f0fdf4; border:1px solid #86efac; border-radius:6px; padding:0.75rem; margin-top:1rem; font-size:0.85rem;">
+          ⭐ <strong>Plan Premium (29 €/mes):</strong><br>
+          • Escandallos y bonos ilimitados por centro.<br>
+          • Recálculo automático de precios ante variación de proveedores.<br>
+          • Exportación ejecutiva sin marcas de agua.
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeUpgradeModal()">Cerrar</button>
+        <button class="btn btn-primary" onclick="simulateUpgradeToPremium()">
+          💳 Desbloquear Premium Ilimitado
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Crear Nuevo Escandallo Rápido -->
+  <div id="createModal" class="modal-overlay" style="display:none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>➕ Formular Nuevo Tratamiento</h3>
+        <button class="btn btn-secondary btn-sm" onclick="closeCreateModal()">✕</button>
+      </div>
+      <form onsubmit="handleCreateServiceSubmit(event)">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label" for="createServiceName">Nombre del Servicio</label>
+            <input type="text" id="createServiceName" class="center-select" style="width:100%; padding:0.5rem;" placeholder="Ej. Radiofrecuencia Tensor Facial" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="createDuration">Duración en cabina (minutos)</label>
+            <div class="input-with-unit">
+              <input type="number" id="createDuration" value="60" min="1" max="720" required>
+              <span class="unit-label">min</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="createPvr">PVR Cobrado al Cliente (con IVA)</label>
+            <div class="input-with-unit">
+              <input type="number" id="createPvr" value="65.00" min="0" step="0.50" required>
+              <span class="unit-label">€</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="createWorkerCategory">Categoría Profesional</label>
+            <select id="createWorkerCategory" class="center-select" style="width:100%; padding:0.5rem;">
+              <option value="Esteticista" selected>Esteticista</option>
+              <option value="Encargado">Encargado</option>
+              <option value="Auxiliar">Auxiliar</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="createConsumableProduct">Producto Cosmético Principal</label>
+            <select id="createConsumableProduct" class="center-select" style="width:100%; padding:0.5rem;" onchange="updateConsumableDetails()">
+              <option value="cos-01" data-name="Leche Limpiadora" data-unit="0" data-unit-cost="0.072" data-unit-name="ml" selected>Leche Limpiadora (0,072 €/ml)</option>
+              <option value="cos-02" data-name="Vial Principios Activos" data-unit="2" data-unit-cost="11.50" data-unit-name="ud">Vial Principios Activos (11,50 €/ud)</option>
+              <option value="cos-03" data-name="Crema Finalizadora" data-unit="0" data-unit-cost="0.304" data-unit-name="ml">Crema Finalizadora (0,304 €/ml)</option>
+              <option value="cos-04" data-name="Aceite Esencial Masaje" data-unit="0" data-unit-cost="0.180" data-unit-name="ml">Aceite Esencial Masaje (0,180 €/ml)</option>
+              <option value="none" data-name="" data-unit="0" data-unit-cost="0" data-unit-name="">(Sin consumibles adicionales)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="createConsumableAmount">Cantidad de Cosmético</label>
+            <div class="input-with-unit">
+              <input type="number" id="createConsumableAmount" value="5" min="0" step="0.5" required>
+              <span id="createConsumableUnitLabel" class="unit-label">ml</span>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeCreateModal()">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Guardar Tratamiento</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="/js/app.js"></script>
+</body>
+</html>

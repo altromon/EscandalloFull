@@ -1,0 +1,328 @@
+{
+  "$schema": "http://cyclonedx.org/schema/bom-1.5.schema.json",
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.5",
+  "serialNumber": "urn:uuid:63b8db76-de7a-465c-99b1-4aad3ea1dd60",
+  "version": 1,
+  "metadata": {
+    "timestamp": "2026-10-15T21:45:00Z",
+    "tools": [
+      {
+        "vendor": "AI-SDLC",
+        "name": "agent-compliance-checker",
+        "version": "1.0.0"
+      }
+    ],
+    "authors": [
+      {
+        "name": "agent-compliance-checker",
+        "email": "compliance@ai-sdlc.local"
+      }
+    ],
+    "component": {
+      "type": "application",
+      "bom-ref": "pkg:generic/escandallo-full@1.0.0",
+      "name": "Escandallo",
+      "version": "1.0.0",
+      "description": "Sistema de Escandallo y Rentabilidad para Centros de Estética y Bienestar",
+      "scope": "required"
+    }
+  },
+  "components": [
+    {
+      "type": "library",
+      "bom-ref": "pkg:nuget/coverlet.collector@6.0.4",
+      "name": "coverlet.collector",
+      "version": "6.0.4",
+      "scope": "excluded",
+      "purl": "pkg:nuget/coverlet.collector@6.0.4",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT",
+            "url": "https://licenses.nuget.org/MIT"
+          }
+        }
+      ],
+      "description": "Cross platform code coverage collection tool for .NET"
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:nuget/Microsoft.Bcl.AsyncInterfaces@6.0.0",
+      "name": "Microsoft.Bcl.AsyncInterfaces",
+      "version": "6.0.0",
+      "scope": "excluded",
+      "purl": "pkg:nuget/Microsoft.Bcl.AsyncInterfaces@6.0.0",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT",
+            "url": "https://licenses.nuget.org/MIT"
+          }
+        }
+      ],
+      "description": "Provides the IAsyncDisposable interface and related types."
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:nuget/Microsoft.CodeCoverage@17.14.1",
+      "name": "Microsoft.CodeCoverage",
+      "version": "17.14.1",
+      "scope": "excluded",
+      "purl": "pkg:nuget/Microsoft.CodeCoverage@17.14.1",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT",
+            "url": "https://licenses.nuget.org/MIT"
+          }
+        }
+      ],
+      "description": "Microsoft.CodeCoverage package provides infrastructure for code coverage data collection."
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:nuget/Microsoft.NET.Test.Sdk@17.14.1",
+      "name": "Microsoft.NET.Test.Sdk",
+      "version": "17.14.1",
+      "scope": "excluded",
+      "purl": "pkg:nuget/Microsoft.NET.Test.Sdk@17.14.1",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT",
+            "url": "https://licenses.nuget.org/MIT"
+          }
+        }
+      ],
+      "description": "The MSbuild targets and properties for building .NET test projects."
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:nuget/Microsoft.Playwright@1.63.0",
+      "name": "Microsoft.Playwright",
+      "version": "1.63.0",
+      "scope": "excluded",
+      "purl": "pkg:nuget/Microsoft.Playwright@1.63.0",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT",
+            "url": "https://licenses.nuget.org/MIT"
+          }
+        }
+      ],
+      "description": "Playwright is a .NET library to automate Chromium, Firefox and WebKit with a single API."
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:nuget/Microsoft.TestPlatform.ObjectModel@17.14.1",
+      "name": "Microsoft.TestPlatform.ObjectModel",
+      "version": "17.14.1",
+      "scope": "excluded",
+      "purl": "pkg:nuget/Microsoft.TestPlatform.ObjectModel@17.14.1",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT",
+            "url": "https://licenses.nuget.org/MIT"
+          }
+        }
+      ],
+      "description": "The Microsoft Test Platform Object Model."
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:nuget/Microsoft.TestPlatform.TestHost@17.14.1",
+      "name": "Microsoft.TestPlatform.TestHost",
+      "version": "17.14.1",
+      "scope": "excluded",
+      "purl": "pkg:nuget/Microsoft.TestPlatform.TestHost@17.14.1",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT",
+            "url": "https://licenses.nuget.org/MIT"
+          }
+        }
+      ],
+      "description": "TestPlatform TestHost."
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:nuget/Newtonsoft.Json@13.0.3",
+      "name": "Newtonsoft.Json",
+      "version": "13.0.3",
+      "scope": "excluded",
+      "purl": "pkg:nuget/Newtonsoft.Json@13.0.3",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT",
+            "url": "https://licenses.nuget.org/MIT"
+          }
+        }
+      ],
+      "description": "Json.NET is a popular high-performance JSON framework for .NET"
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:nuget/System.ComponentModel.Annotations@5.0.0",
+      "name": "System.ComponentModel.Annotations",
+      "version": "5.0.0",
+      "scope": "excluded",
+      "purl": "pkg:nuget/System.ComponentModel.Annotations@5.0.0",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT",
+            "url": "https://licenses.nuget.org/MIT"
+          }
+        }
+      ],
+      "description": "Provides attributes that are used to define metadata for objects, series of data, and fields."
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:nuget/xunit@2.9.3",
+      "name": "xunit",
+      "version": "2.9.3",
+      "scope": "excluded",
+      "purl": "pkg:nuget/xunit@2.9.3",
+      "licenses": [
+        {
+          "license": {
+            "id": "Apache-2.0",
+            "url": "https://licenses.nuget.org/Apache-2.0"
+          }
+        }
+      ],
+      "description": "xUnit.net is a developer testing tool for .NET Framework and .NET Core."
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:nuget/xunit.abstractions@2.0.3",
+      "name": "xunit.abstractions",
+      "version": "2.0.3",
+      "scope": "excluded",
+      "purl": "pkg:nuget/xunit.abstractions@2.0.3",
+      "licenses": [
+        {
+          "license": {
+            "id": "Apache-2.0",
+            "url": "https://raw.githubusercontent.com/xunit/xunit/master/license.txt"
+          }
+        }
+      ],
+      "description": "Common abstractions used to exchange information between xUnit.net and runners."
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:nuget/xunit.analyzers@1.18.0",
+      "name": "xunit.analyzers",
+      "version": "1.18.0",
+      "scope": "excluded",
+      "purl": "pkg:nuget/xunit.analyzers@1.18.0",
+      "licenses": [
+        {
+          "license": {
+            "id": "Apache-2.0",
+            "url": "https://licenses.nuget.org/Apache-2.0"
+          }
+        }
+      ],
+      "description": "Code analyzers for projects using xUnit.net."
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:nuget/xunit.assert@2.9.3",
+      "name": "xunit.assert",
+      "version": "2.9.3",
+      "scope": "excluded",
+      "purl": "pkg:nuget/xunit.assert@2.9.3",
+      "licenses": [
+        {
+          "license": {
+            "id": "Apache-2.0",
+            "url": "https://licenses.nuget.org/Apache-2.0"
+          }
+        }
+      ],
+      "description": "Includes the assertion library in xUnit.net."
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:nuget/xunit.core@2.9.3",
+      "name": "xunit.core",
+      "version": "2.9.3",
+      "scope": "excluded",
+      "purl": "pkg:nuget/xunit.core@2.9.3",
+      "licenses": [
+        {
+          "license": {
+            "id": "Apache-2.0",
+            "url": "https://licenses.nuget.org/Apache-2.0"
+          }
+        }
+      ],
+      "description": "Includes the basic platform for xUnit.net."
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:nuget/xunit.extensibility.core@2.9.3",
+      "name": "xunit.extensibility.core",
+      "version": "2.9.3",
+      "scope": "excluded",
+      "purl": "pkg:nuget/xunit.extensibility.core@2.9.3",
+      "licenses": [
+        {
+          "license": {
+            "id": "Apache-2.0",
+            "url": "https://licenses.nuget.org/Apache-2.0"
+          }
+        }
+      ],
+      "description": "Includes xunit.core.dll for extensibility purposes."
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:nuget/xunit.extensibility.execution@2.9.3",
+      "name": "xunit.extensibility.execution",
+      "version": "2.9.3",
+      "scope": "excluded",
+      "purl": "pkg:nuget/xunit.extensibility.execution@2.9.3",
+      "licenses": [
+        {
+          "license": {
+            "id": "Apache-2.0",
+            "url": "https://licenses.nuget.org/Apache-2.0"
+          }
+        }
+      ],
+      "description": "Includes xunit.execution.*.dll for extensibility purposes."
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:nuget/xunit.runner.visualstudio@3.1.4",
+      "name": "xunit.runner.visualstudio",
+      "version": "3.1.4",
+      "scope": "excluded",
+      "purl": "pkg:nuget/xunit.runner.visualstudio@3.1.4",
+      "licenses": [
+        {
+          "license": {
+            "id": "Apache-2.0",
+            "url": "https://licenses.nuget.org/Apache-2.0"
+          }
+        }
+      ],
+      "description": "Visual Studio 2022+ test runner for xUnit.net."
+    }
+  ],
+  "dependencies": [
+    {
+      "ref": "pkg:generic/escandallo-full@1.0.0",
+      "dependsOn": []
+    }
+  ]
+}

@@ -1,0 +1,210 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Escandallo Estética - Cost Configuration & Recalculation API",
+    "version": "1.0.0",
+    "description": "API contract for cost factor management (workers, overhead, cosmetics) and cascade recalculations"
+  },
+  "paths": {
+    "/api/v1/costs/parameters": {
+      "get": {
+        "summary": "Get center cost parameters (opening minutes and overhead)",
+        "operationId": "getCostParameters",
+        "responses": {
+          "200": {
+            "description": "Cost parameters retrieved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CenterParametersDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update center opening minutes and monthly overhead expenses",
+        "operationId": "updateCostParameters",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCenterParametersRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Parameters updated and recalculation enqueued" },
+          "400": { "description": "Validation error (e.g. opening minutes <= 0)" }
+        }
+      }
+    },
+    "/api/v1/costs/workers": {
+      "get": {
+        "summary": "List professional categories and wage rates",
+        "operationId": "getWorkers",
+        "responses": {
+          "200": {
+            "description": "List of workers",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/WorkerDto" }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new professional worker role",
+        "operationId": "createWorker",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateWorkerRequest" }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Worker created successfully" },
+          "400": { "description": "Invalid salary data" }
+        }
+      }
+    },
+    "/api/v1/costs/products": {
+      "get": {
+        "summary": "List catalog of cosmetics and consumables",
+        "operationId": "getCosmeticProducts",
+        "responses": {
+          "200": {
+            "description": "Catalog of cosmetic products",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/CosmeticProductDto" }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Register a new cosmetic product",
+        "operationId": "createCosmeticProduct",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateCosmeticRequest" }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Product registered" }
+        }
+      }
+    },
+    "/api/v1/costs/products/{id}": {
+      "put": {
+        "summary": "Update purchase price of a cosmetic product with cascade recalculation",
+        "operationId": "updateCosmeticPrice",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UpdateCosmeticPriceRequest" }
+            }
+          }
+        },
+        "responses": {
+          "202": { "description": "Price updated, audit recorded, and cascade recalculation accepted" },
+          "404": { "description": "Product not found in active center" },
+          "429": { "description": "Too many mutation requests (Rate limit exceeded)" }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CenterParametersDto": {
+        "type": "object",
+        "required": ["monthlyOpeningHours", "monthlyOpeningMinutes", "monthlyOverheadCost", "overheadCostPerMinute"],
+        "properties": {
+          "monthlyOpeningHours": { "type": "number", "description": "Unit: h/mes", "example": 176.0 },
+          "monthlyOpeningMinutes": { "type": "integer", "description": "Unit: min/mes", "example": 10560 },
+          "monthlyOverheadCost": { "type": "number", "format": "decimal", "description": "Unit: EUR/mes", "example": 875.00 },
+          "overheadCostPerMinute": { "type": "number", "format": "decimal", "description": "Unit: EUR/min", "example": 0.08286 }
+        }
+      },
+      "UpdateCenterParametersRequest": {
+        "type": "object",
+        "properties": {
+          "monthlyOpeningHours": { "type": "number", "minimum": 1, "description": "Unit: h/mes (e.g. 176.0)" },
+          "monthlyOpeningMinutes": { "type": "integer", "minimum": 60, "description": "Unit: min/mes (e.g. 10560)" },
+          "monthlyOverheadCost": { "type": "number", "minimum": 0, "description": "Unit: EUR/mes" }
+        }
+      },
+      "WorkerDto": {
+        "type": "object",
+        "required": ["id", "categoryName", "monthlyCompanyCost", "costPerMinute"],
+        "properties": {
+          "id": { "type": "string" },
+          "categoryName": { "type": "string" },
+          "monthlyCompanyCost": { "type": "number", "description": "Unit: EUR/mes" },
+          "costPerMinute": { "type": "number", "description": "Unit: EUR/min" }
+        }
+      },
+      "CreateWorkerRequest": {
+        "type": "object",
+        "required": ["categoryName", "monthlyCompanyCost"],
+        "properties": {
+          "categoryName": { "type": "string" },
+          "monthlyCompanyCost": { "type": "number", "minimum": 0, "description": "Unit: EUR/mes" }
+        }
+      },
+      "CosmeticProductDto": {
+        "type": "object",
+        "required": ["id", "name", "packagePrice", "capacity", "unitOfMeasure", "wastePercentage", "effectiveUnitCost", "isDemo"],
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string" },
+          "packagePrice": { "type": "number", "description": "Unit: EUR" },
+          "capacity": { "type": "number", "description": "Capacity quantity in unitOfMeasure" },
+          "unitOfMeasure": { "type": "string", "enum": ["ml", "g", "dosis", "unidad"] },
+          "wastePercentage": { "type": "number", "description": "Unit: % (0.0 to 100.0, tanto por 100)" },
+          "grossUnitCost": { "type": "number", "description": "Unit: EUR per unitOfMeasure" },
+          "effectiveUnitCost": { "type": "number", "description": "Unit: EUR per unitOfMeasure" },
+          "isDemo": { "type": "boolean" }
+        }
+      },
+      "CreateCosmeticRequest": {
+        "type": "object",
+        "required": ["name", "packagePrice", "capacity", "unitOfMeasure", "wastePercentage"],
+        "properties": {
+          "name": { "type": "string" },
+          "packagePrice": { "type": "number", "minimum": 0, "description": "Unit: EUR" },
+          "capacity": { "type": "number", "minimum": 0.01 },
+          "unitOfMeasure": { "type": "string", "enum": ["ml", "g", "dosis", "unidad"] },
+          "wastePercentage": { "type": "number", "minimum": 0, "maximum": 100, "description": "Unit: % (0 to 100)" }
+        }
+      },
+      "UpdateCosmeticPriceRequest": {
+        "type": "object",
+        "required": ["newPackagePrice"],
+        "properties": {
+          "newPackagePrice": { "type": "number", "minimum": 0, "description": "Unit: EUR" }
+        }
+      }
+    }
+  }
+}

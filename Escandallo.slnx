@@ -1,0 +1,25 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Escandallo.Core/Escandallo.Core.csproj" />
+    <Project Path="src/Escandallo.Api/Escandallo.Api.csproj" />
+    <Project Path="src/Escandallo.Web/Escandallo.Web.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Escandallo.Tests.Contracts/Escandallo.Tests.Contracts.csproj" />
+  </Folder>
+  <Folder Name="/tests/e2e/">
+    <Project Path="tests/e2e/Escandallo.Tests.E2E.csproj" />
+  </Folder>
+  <Folder Name="/tests/features/">
+    <Project Path="tests/features/Escandallo.Tests.Bdd.csproj" />
+  </Folder>
+  <Folder Name="/tests/ui/">
+    <Project Path="tests/ui/Escandallo.Tests.UI.csproj" />
+  </Folder>
+  <Folder Name="/tests/unit/">
+    <Project Path="tests/unit/Escandallo.Tests.Unit.csproj" />
+  </Folder>
+  <Folder Name="/tests/browser/">
+    <Project Path="tests/browser/Escandallo.Tests.Browser.csproj" />
+  </Folder>
+</Solution>
