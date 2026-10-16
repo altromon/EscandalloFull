@@ -36,10 +36,11 @@ public class EscandalloRepository : IEscandalloRepository
         };
     }
 
-    private static CompleteEscandallo CreateDefaultMesodermolifting(string id) => new()
+    internal static CompleteEscandallo CreateDefaultMesodermolifting(string id) => new()
     {
         Id = id,
         ServiceName = "Mesodermolifting",
+        IsDemo = true,
         DurationMinutes = 60,
         TaxRatePercentage = TaxRate.General21,
         WorkerCategory = "Encargado",
@@ -75,10 +76,11 @@ public class EscandalloRepository : IEscandalloRepository
         }
     };
 
-    private static CompleteEscandallo CreateSecondaryFacial(string id) => new()
+    internal static CompleteEscandallo CreateSecondaryFacial(string id) => new()
     {
         Id = id,
         ServiceName = "Higiene Facial Profunda",
+        IsDemo = true,
         DurationMinutes = 50,
         TaxRatePercentage = TaxRate.General21,
         WorkerCategory = "Esteticista",
@@ -142,6 +144,20 @@ public class EscandalloRepository : IEscandalloRepository
                 return list.RemoveAll(x => x.Id == id) > 0;
             }
             return false;
+        }
+    }
+
+    public int Clear(string centerId)
+    {
+        lock (_lock)
+        {
+            if (_servicesByCenter.TryGetValue(centerId, out var list))
+            {
+                int count = list.Count;
+                list.Clear();
+                return count;
+            }
+            return 0;
         }
     }
 }

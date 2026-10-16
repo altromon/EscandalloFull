@@ -25,6 +25,9 @@ public interface ISubscriptionManager
     void ReactivateEscandallo(string centerId, string escandalloId);
     string CreateCheckoutSession(string centerId, CreateCheckoutRequest request);
     bool ProcessWebhook(string rawPayload, string signatureHeader);
+    SubscriptionStatus UpgradeToPremium(string centerId);
+    SubscriptionStatus CancelSubscription(string centerId);
+    void ResetActiveCount(string centerId);
 }
 
 public interface IEscandalloRepository
@@ -33,6 +36,7 @@ public interface IEscandalloRepository
     CompleteEscandallo? GetById(string centerId, string id);
     void Save(string centerId, CompleteEscandallo escandallo);
     bool Delete(string centerId, string id);
+    int Clear(string centerId);
 }
 
 public interface IExportDocumentEngine
@@ -48,6 +52,8 @@ public interface IAuthGateway
     IEnumerable<CenterMembership> GetAuthorizedCenters(string userId);
     AuthSession SelectCenter(string userId, string centerId);
     bool ValidateSession(string token, string expectedCenterId);
+    AuthSession Register(string email, string password, string? centerName = null, RoleType role = RoleType.User);
+    CenterMembership CreateCenter(string userId, string centerName);
 }
 
 public interface IDemoManager

@@ -26,6 +26,9 @@ public class EscandalloCostEngine : IEscandalloCostEngine
         return new CenterCostParameters
         {
             MonthlyOpeningHours = monthlyOpeningHours,
+            LocalRent = localRent,
+            Supplies = supplies,
+            GeneralCabinConsumables = generalCabinConsumables,
             MonthlyOverheadCost = totalOverhead
         };
     }

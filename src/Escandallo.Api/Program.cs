@@ -1,11 +1,16 @@
 using Escandallo.Core.Services;
 using Escandallo.Core.Contracts;
+using Escandallo.Api.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var logBuffer = new SystemLogBuffer();
+builder.Services.AddSingleton<ISystemLogBuffer>(logBuffer);
 
 // Configuración de Logging estructurado
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
+builder.Logging.AddProvider(new MemoryLoggerProvider(logBuffer));
 
 // Habilitar CORS para consumo desacoplado desde Escandallo.Web y otros clientes
 builder.Services.AddCors(options =>
@@ -22,12 +27,11 @@ builder.Services.AddSingleton<IMarginCalculator, MarginCalculator>();
 builder.Services.AddSingleton<ISubscriptionManager, SubscriptionManager>();
 builder.Services.AddSingleton<IExportDocumentEngine, ExportDocumentEngine>();
 builder.Services.AddSingleton<IAuthGateway, AuthGateway>();
+builder.Services.AddSingleton<IEscandalloRepository, EscandalloRepository>();
+builder.Services.AddSingleton<ICostConfigurationRepository, CostConfigurationRepository>();
 builder.Services.AddSingleton<IDemoManager, DemoManager>();
 builder.Services.AddSingleton<IAuditTrailRepository, AuditTrailRepository>();
 builder.Services.AddSingleton<IHealthCheckService, HealthCheckService>();
-
-builder.Services.AddSingleton<IEscandalloRepository, EscandalloRepository>();
-builder.Services.AddSingleton<ICostConfigurationRepository, CostConfigurationRepository>();
 
 // API REST Controllers
 builder.Services.AddControllers();

@@ -9,6 +9,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Escandallo.Core\Escandallo.Core.csproj" />
+    <ProjectReference Include="..\Escandallo.Api\Escandallo.Api.csproj" />
   </ItemGroup>
-
 </Project>

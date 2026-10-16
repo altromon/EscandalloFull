@@ -17,6 +17,13 @@ public class SubscriptionManager : ISubscriptionManager
     public SubscriptionManager()
     {
         // Inicialización de centros de prueba con sus estados canónicos
+        _centerSubscriptions["ctr-madrid-1"] = new SubscriptionStatus
+        {
+            Plan = PlanType.Free,
+            ActiveEscandallos = 1,
+            MaxAllowedEscandallos = 2
+        };
+
         _centerSubscriptions["ctr-radiante-1"] = new SubscriptionStatus
         {
             Plan = PlanType.Free,
@@ -89,6 +96,37 @@ public class SubscriptionManager : ISubscriptionManager
     public string CreateCheckoutSession(string centerId, CreateCheckoutRequest request)
     {
         return $"https://checkout.stripe.com/c/pay/cs_test_{centerId}_{DateTimeOffset.UtcNow.ToUnixTimeSeconds()}";
+    }
+
+    public SubscriptionStatus UpgradeToPremium(string centerId)
+    {
+        lock (_syncLock)
+        {
+            var status = GetStatus(centerId);
+            status.Plan = PlanType.Premium;
+            status.MaxAllowedEscandallos = int.MaxValue;
+            return status;
+        }
+    }
+
+    public SubscriptionStatus CancelSubscription(string centerId)
+    {
+        lock (_syncLock)
+        {
+            var status = GetStatus(centerId);
+            status.Plan = PlanType.Free;
+            status.MaxAllowedEscandallos = 2;
+            return status;
+        }
+    }
+
+    public void ResetActiveCount(string centerId)
+    {
+        lock (_syncLock)
+        {
+            var status = GetStatus(centerId);
+            status.ActiveEscandallos = 0;
+        }
     }
 
     public bool ProcessWebhook(string rawPayload, string signatureHeader)

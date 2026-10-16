@@ -16,9 +16,16 @@ public class DemoManager : IDemoManager
     }
 
     private readonly ConcurrentDictionary<string, CenterDemoState> _states = new();
+    private readonly IEscandalloRepository? _escandalloRepo;
+    private readonly ISubscriptionManager? _subscriptionManager;
 
-    public DemoManager()
+    public DemoManager(
+        IEscandalloRepository? escandalloRepo = null,
+        ISubscriptionManager? subscriptionManager = null)
     {
+        _escandalloRepo = escandalloRepo;
+        _subscriptionManager = subscriptionManager;
+
         _states["ctr-mixed-data"] = new CenterDemoState
         {
             HasDemoData = true,
@@ -44,16 +51,47 @@ public class DemoManager : IDemoManager
         var state = _states.GetOrAdd(centerId, _ => new CenterDemoState());
         state.HasDemoData = true;
         state.DemoCount = 2; // Cleasing Milk y Mesodermolifting estándar
+
+        if (_escandalloRepo != null)
+        {
+            var existing = _escandalloRepo.GetByCenter(centerId).ToList();
+            if (existing.Count == 0 || overrideIfRealExists)
+            {
+                if (overrideIfRealExists)
+                {
+                    _escandalloRepo.Clear(centerId);
+                }
+                _escandalloRepo.Save(centerId, EscandalloRepository.CreateDefaultMesodermolifting($"esc-demo-1-{centerId}"));
+                _escandalloRepo.Save(centerId, EscandalloRepository.CreateSecondaryFacial($"esc-demo-2-{centerId}"));
+                if (_subscriptionManager != null)
+                {
+                    var status = _subscriptionManager.GetStatus(centerId);
+                    status.ActiveEscandallos = 2;
+                }
+            }
+        }
     }
 
     public int PurgeDemoData(string centerId)
     {
-        if (!_states.TryGetValue(centerId, out var state))
-            return 0;
+        int purgedCount = 0;
+        if (_states.TryGetValue(centerId, out var state))
+        {
+            purgedCount = state.DemoCount;
+            state.DemoCount = 0;
+            state.HasDemoData = false;
+        }
 
-        int purgedCount = state.DemoCount;
-        state.DemoCount = 0;
-        state.HasDemoData = false;
+        if (_escandalloRepo != null)
+        {
+            var repoDeleted = _escandalloRepo.Clear(centerId);
+            if (purgedCount == 0)
+            {
+                purgedCount = repoDeleted;
+            }
+        }
+
+        _subscriptionManager?.ResetActiveCount(centerId);
 
         return purgedCount;
     }

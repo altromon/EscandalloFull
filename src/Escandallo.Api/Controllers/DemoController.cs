@@ -8,10 +8,12 @@ namespace Escandallo.Api.Controllers;
 public class DemoController : ControllerBase
 {
     private readonly IDemoManager _demoManager;
+    private readonly IAuditTrailRepository? _auditTrailRepo;
 
-    public DemoController(IDemoManager demoManager)
+    public DemoController(IDemoManager demoManager, IAuditTrailRepository? auditTrailRepo = null)
     {
         _demoManager = demoManager;
+        _auditTrailRepo = auditTrailRepo;
     }
 
     public record LoadDemoRequest(string? CenterId = null, bool OverrideIfRealExists = false);
@@ -46,6 +48,16 @@ public class DemoController : ControllerBase
         string targetCenter = centerId ?? body?.CenterId ?? headerCenterId ?? "ctr-madrid-1";
         bool doOverride = overrideIfRealExists ?? body?.OverrideIfRealExists ?? false;
         _demoManager.LoadDemoData(targetCenter, doOverride);
+        _auditTrailRepo?.RecordEntry(new AuditEntry
+        {
+            Id = Guid.NewGuid().ToString(),
+            CenterId = targetCenter,
+            ActorId = "User",
+            TimestampUtc = DateTime.UtcNow,
+            PreviousValue = 0,
+            NewValue = 3,
+            ChangeType = "LOAD_DEMO_DATA:Carga de datos demostrativos oficiales"
+        });
         return Ok(new { success = true, centerId = targetCenter });
     }
 
@@ -59,6 +71,16 @@ public class DemoController : ControllerBase
     {
         string targetCenter = centerId ?? queryCenterId ?? body?.CenterId ?? headerCenterId ?? "ctr-madrid-1";
         int deleted = _demoManager.PurgeDemoData(targetCenter);
+        _auditTrailRepo?.RecordEntry(new AuditEntry
+        {
+            Id = Guid.NewGuid().ToString(),
+            CenterId = targetCenter,
+            ActorId = "User",
+            TimestampUtc = DateTime.UtcNow,
+            PreviousValue = deleted,
+            NewValue = 0,
+            ChangeType = $"PURGE_DEMO_DATA:Depuración de {deleted} registros demo"
+        });
         return Ok(new
         {
             purgedCount = deleted,

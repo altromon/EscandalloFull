@@ -14,7 +14,11 @@
       ✨ <span>Escandallo Estética</span>
     </div>
 
-    <div style="display: flex; align-items: center; gap: 1rem;">
+    <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+      <div id="navUserBadge" class="user-badge" style="display:none;">
+        👤 <span id="userEmailSpan">gestor@estetica.com</span>
+      </div>
+
       <div class="navbar-center-badge" id="activeCenterBadge">
         📍 <span id="activeCenterBadgeText">Centro Belleza Madrid (ctr-madrid-1)</span>
       </div>
@@ -25,6 +29,14 @@
         <option value="ctr-luz-belleza">Luz y Belleza</option>
         <option value="ctr-test-free">Centro Free Test</option>
       </select>
+
+      <button id="btnOpenNewCenter" class="btn btn-secondary btn-sm" style="display:none;" onclick="openCreateCenterModal()">
+        ➕ Nuevo Centro
+      </button>
+
+      <button id="btnLogout" class="btn btn-secondary btn-sm" style="display:none;" onclick="handleLogout()">
+        🚪 Salir
+      </button>
     </div>
   </header>
 
@@ -43,8 +55,10 @@
 
     <!-- 3. Barra de Acciones y Compuerta Freemium (BR-FREEMIUM-LIMIT-001, MVP-USAB-02) -->
     <section class="action-bar">
-      <div class="quota-indicator">
+      <div class="quota-indicator" style="display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
         <span id="quotaBadge" class="quota-badge">Escandallos activos: 1/2 (Plan Free)</span>
+        <button id="btnSubscribePro" class="btn btn-sm btn-primary" onclick="handleSubscribePro()" style="display:none;">⭐ Contratar Plan Pro</button>
+        <button id="btnCancelPro" class="btn btn-sm btn-danger" onclick="handleCancelPro()" style="display:none;">❌ Cancelar Pro</button>
       </div>
 
       <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
@@ -57,60 +71,121 @@
         <button class="btn btn-secondary" onclick="handleExportXlsx()">
           📊 Descargar Excel
         </button>
+        <button class="btn btn-secondary" onclick="openAuditModal()">
+          📜 Histórico
+        </button>
+        <button class="btn btn-secondary" onclick="openLogsModal()">
+          🔍 Logs y Trazas
+        </button>
       </div>
     </section>
 
     <!-- 4. Cuadrícula Principal: Configuración de Costes y Matriz de Rentabilidad -->
     <div class="grid-2">
 
-      <!-- Columna Izquierda: Configuración de Gastos Generales (UC-COST-CONFIG-001) -->
+      <!-- Columna Izquierda: Configuración de Gastos Generales, Personal y Cosméticos (Excel Parity) -->
       <aside class="card">
-        <div class="card-title">
-          <span>⚙️ Gastos de Salón</span>
-          <span style="font-size:0.75rem; color:var(--text-muted); font-weight:normal;" id="calcMinutes">10.560 min/mes</span>
+        <div class="tabs-nav">
+          <button id="tabBtnSalon" class="tab-btn active" onclick="switchConfigTab('salon')">⚙️ Salón</button>
+          <button id="tabBtnWorkers" class="tab-btn" onclick="switchConfigTab('workers')">👥 Personal</button>
+          <button id="tabBtnProducts" class="tab-btn" onclick="switchConfigTab('products')">🧴 Cosméticos</button>
         </div>
 
-        <form id="costsForm" onsubmit="handleSaveCosts(event)">
-          <div class="form-group">
-            <label class="form-label" for="inputHours">Horas apertura al mes (h/mes)</label>
-            <div class="input-with-unit">
-              <input type="number" id="inputHours" value="176" min="1" max="744" step="1" required>
-              <span class="unit-label">h/mes</span>
+        <!-- Pestaña 1: Gastos Salón -->
+        <div id="tabContentSalon" class="tab-content active">
+          <div class="card-title" style="margin-bottom:0.5rem;">
+            <span>Costes Fijos</span>
+            <span style="font-size:0.75rem; color:var(--text-muted); font-weight:normal;" id="calcMinutes">10.560 min/mes</span>
+          </div>
+
+          <form id="costsForm" onsubmit="handleSaveCosts(event)">
+            <div class="form-group">
+              <label class="form-label" for="inputHours">Horas apertura al mes (h/mes)</label>
+              <div class="input-with-unit">
+                <input type="number" id="inputHours" value="176" min="1" max="744" step="1" required>
+                <span class="unit-label">h/mes</span>
+              </div>
             </div>
-          </div>
 
-          <div class="form-group">
-            <label class="form-label" for="inputRent">Alquiler del local (€/mes)</label>
-            <div class="input-with-unit">
-              <input type="number" id="inputRent" value="335.00" min="0" step="0.01" required>
-              <span class="unit-label">€/mes</span>
+            <div class="form-group">
+              <label class="form-label" for="inputRent">Alquiler del local (€/mes)</label>
+              <div class="input-with-unit">
+                <input type="number" id="inputRent" value="335.00" min="0" step="0.01" required>
+                <span class="unit-label">€/mes</span>
+              </div>
             </div>
-          </div>
 
-          <div class="form-group">
-            <label class="form-label" for="inputSupplies">Suministros (Luz, agua, internet)</label>
-            <div class="input-with-unit">
-              <input type="number" id="inputSupplies" value="100.00" min="0" step="0.01" required>
-              <span class="unit-label">€/mes</span>
+            <div class="form-group">
+              <label class="form-label" for="inputSupplies">Suministros (Luz, agua, internet)</label>
+              <div class="input-with-unit">
+                <input type="number" id="inputSupplies" value="100.00" min="0" step="0.01" required>
+                <span class="unit-label">€/mes</span>
+              </div>
             </div>
-          </div>
 
-          <div class="form-group">
-            <label class="form-label" for="inputCabinConsumables">Consumibles generales de cabina</label>
-            <div class="input-with-unit">
-              <input type="number" id="inputCabinConsumables" value="440.00" min="0" step="0.01" required>
-              <span class="unit-label">€/mes</span>
+            <div class="form-group">
+              <label class="form-label" for="inputCabinConsumables">Consumibles generales de cabina</label>
+              <div class="input-with-unit">
+                <input type="number" id="inputCabinConsumables" value="440.00" min="0" step="0.01" required>
+                <span class="unit-label">€/mes</span>
+              </div>
             </div>
-          </div>
 
-          <div style="background:#f8fafc; padding:0.6rem; border-radius:6px; margin:0.75rem 0; font-size:0.8rem;">
-            Coste indirecto resultante: <strong id="calculatedOverheadMinute">0.08286 €/min</strong>
-          </div>
+            <div style="background:#f8fafc; padding:0.6rem; border-radius:6px; margin:0.75rem 0; font-size:0.8rem;">
+              Coste indirecto resultante: <strong id="calculatedOverheadMinute">0.08286 €/min</strong>
+            </div>
 
-          <button type="submit" class="btn btn-secondary" style="width:100%; justify-content:center;">
-            💾 Guardar Parámetros
-          </button>
-        </form>
+            <button type="submit" class="btn btn-secondary" style="width:100%; justify-content:center;">
+              💾 Guardar Parámetros
+            </button>
+          </form>
+        </div>
+
+        <!-- Pestaña 2: Personal -->
+        <div id="tabContentWorkers" class="tab-content">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem;">
+            <span style="font-weight:700; font-size:0.9rem;">Coste Personal</span>
+            <button class="btn btn-primary btn-sm" onclick="openAddWorkerModal()">➕ Añadir</button>
+          </div>
+          <div class="table-responsive">
+            <table style="font-size:0.8rem;">
+              <thead>
+                <tr>
+                  <th>Puesto</th>
+                  <th>Coste/Mes</th>
+                  <th>€/min</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="workersTableBody">
+                <!-- Inyección dinámica -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Pestaña 3: Cosméticos -->
+        <div id="tabContentProducts" class="tab-content">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem;">
+            <span style="font-weight:700; font-size:0.9rem;">Catálogo Cosméticos</span>
+            <button class="btn btn-primary btn-sm" onclick="openAddProductModal()">➕ Añadir</button>
+          </div>
+          <div class="table-responsive">
+            <table style="font-size:0.8rem;">
+              <thead>
+                <tr>
+                  <th>Producto</th>
+                  <th>Envase</th>
+                  <th>Coste Ud.</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="productsTableBody">
+                <!-- Inyección dinámica -->
+              </tbody>
+            </table>
+          </div>
+        </div>
       </aside>
 
       <!-- Columna Derecha: Matriz de Servicios y Semáforos (Matriz 4 Estados UI) -->
@@ -171,6 +246,281 @@
 
     </div>
   </main>
+
+  <!-- Modal: Login y Registro de Usuario (FR-AUTH-001) -->
+  <div id="loginModal" class="modal-overlay" style="display:none;">
+    <div class="modal-content" style="max-width:400px;">
+      <div class="modal-header" style="flex-direction:column; align-items:flex-start; gap:0.5rem;">
+        <h3 id="authModalTitle">🔐 Acceso al Salón</h3>
+        <div class="tabs-nav" style="width:100%; margin:0;">
+          <button type="button" id="tabBtnLogin" class="tab-btn active" style="flex:1;" onclick="switchAuthTab('login')">Entrar</button>
+          <button type="button" id="tabBtnRegister" class="tab-btn" style="flex:1;" onclick="switchAuthTab('register')">Registrarse</button>
+        </div>
+      </div>
+      <!-- Login Form -->
+      <form id="loginForm" onsubmit="handleLogin(event)">
+        <div class="modal-body">
+          <div id="loginError" class="state-error" style="display:none; padding:0.5rem; margin-bottom:0.75rem; font-size:0.8rem;"></div>
+          <div class="form-group">
+            <label class="form-label" for="loginEmail">Correo electrónico</label>
+            <input type="email" id="loginEmail" class="center-select" style="width:100%; padding:0.5rem;" value="gestor@estetica.com" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="loginPassword">Contraseña</label>
+            <input type="password" id="loginPassword" class="center-select" style="width:100%; padding:0.5rem;" value="SecretPass123!" required>
+          </div>
+          <div style="background:#f1f5f9; padding:0.6rem; border-radius:6px; font-size:0.75rem; color:var(--text-muted); margin-top:0.5rem;">
+            <strong>Credenciales disponibles:</strong><br>
+            • Gestor: <code>gestor@estetica.com</code> / <code>SecretPass123!</code><br>
+            • Colaborador: <code>guest@collaborator.com</code> / <code>GuestPass123!</code>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" id="btnLoginSubmit" class="btn btn-primary" style="width:100%; justify-content:center;">Entrar al Salón</button>
+        </div>
+      </form>
+
+      <!-- Register Form -->
+      <form id="registerForm" onsubmit="handleRegisterSubmit(event)" style="display:none;">
+        <div class="modal-body">
+          <div id="registerError" class="state-error" style="display:none; padding:0.5rem; margin-bottom:0.75rem; font-size:0.8rem;"></div>
+          <div class="form-group">
+            <label class="form-label" for="registerEmail">Correo electrónico</label>
+            <input type="email" id="registerEmail" class="center-select" style="width:100%; padding:0.5rem;" placeholder="tu@estetica.com" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="registerPassword">Contraseña (mínimo 6 caracteres)</label>
+            <input type="password" id="registerPassword" class="center-select" style="width:100%; padding:0.5rem;" placeholder="******" minlength="6" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="registerCenterName">Nombre de tu Centro de Estética</label>
+            <input type="text" id="registerCenterName" class="center-select" style="width:100%; padding:0.5rem;" placeholder="Ej. Centro de Belleza Élite" required>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" id="btnRegisterSubmit" class="btn btn-primary" style="width:100%; justify-content:center;">Crear Cuenta y Salón</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Crear Nuevo Centro de Estética (Punto 4) -->
+  <div id="createCenterModal" class="modal-overlay" style="display:none;">
+    <div class="modal-content" style="max-width:420px;">
+      <div class="modal-header">
+        <h3>📍 Crear Nuevo Centro de Estética</h3>
+        <button class="btn btn-secondary btn-sm" onclick="closeCreateCenterModal()">✕</button>
+      </div>
+      <form onsubmit="handleCreateCenterSubmit(event)">
+        <div class="modal-body">
+          <div id="createCenterError" class="state-error" style="display:none; padding:0.5rem; margin-bottom:0.75rem; font-size:0.8rem;"></div>
+          <div class="form-group">
+            <label class="form-label" for="newCenterNameInput">Nombre del Centro</label>
+            <input type="text" id="newCenterNameInput" class="center-select" style="width:100%; padding:0.5rem;" placeholder="Ej. Clínica Estética Serrano" required>
+          </div>
+          <div style="font-size:0.75rem; color:var(--text-muted);">
+            Se creará un nuevo salón vinculado a tu usuario con configuración de costes y cartera independiente.
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeCreateCenterModal()">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Crear Centro</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Añadir Categoría de Personal (TSK-REM-003) -->
+  <div id="addWorkerModal" class="modal-overlay" style="display:none;">
+    <div class="modal-content" style="max-width:420px;">
+      <div class="modal-header">
+        <h3>👥 Añadir Categoría de Personal</h3>
+        <button class="btn btn-secondary btn-sm" onclick="closeAddWorkerModal()">✕</button>
+      </div>
+      <form onsubmit="handleCreateWorkerSubmit(event)">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label" for="workerCategoryName">Categoría / Puesto</label>
+            <input type="text" id="workerCategoryName" class="center-select" style="width:100%; padding:0.5rem;" placeholder="Ej. Oficial de Cabina" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="workerMonthlyCost">Coste Mensual Empresa (€/mes)</label>
+            <div class="input-with-unit">
+              <input type="number" id="workerMonthlyCost" value="1800.00" min="0" step="any" required>
+              <span class="unit-label">€/mes</span>
+            </div>
+          </div>
+          <div style="font-size:0.75rem; color:var(--text-muted);">
+            Suma de salario bruto y seguros sociales de la empresa (calcula el coste/minuto sobre las horas de salón).
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeAddWorkerModal()">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Guardar Puesto</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Añadir Tipo de Cosmético (TSK-REM-003) -->
+  <div id="addProductModal" class="modal-overlay" style="display:none;">
+    <div class="modal-content" style="max-width:440px;">
+      <div class="modal-header">
+        <h3>🧴 Añadir Tipo de Cosmético</h3>
+        <button class="btn btn-secondary btn-sm" onclick="closeAddProductModal()">✕</button>
+      </div>
+      <form onsubmit="handleCreateProductSubmit(event)">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label" for="productName">Nombre del Cosmético</label>
+            <input type="text" id="productName" class="center-select" style="width:100%; padding:0.5rem;" placeholder="Ej. Sérum Ácido Hialurónico" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="productPrice">Precio Compra Envase (€)</label>
+            <div class="input-with-unit">
+              <input type="number" id="productPrice" value="45.00" min="0" step="0.01" required>
+              <span class="unit-label">€</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="productCapacity">Capacidad / Unidades Envase</label>
+            <div class="input-with-unit">
+              <input type="number" id="productCapacity" value="250" min="1" step="1" required>
+              <span class="unit-label">cant</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="productUnit">Unidad de Medida</label>
+            <select id="productUnit" class="center-select" style="width:100%; padding:0.5rem;">
+              <option value="0" selected>Mililitros (ml)</option>
+              <option value="1">Gramos (g)</option>
+              <option value="2">Unidades (ud / vial / ampolla)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="productWaste">Merma Estimada (%)</label>
+            <div class="input-with-unit">
+              <input type="number" id="productWaste" value="5" min="0" max="50" step="1" required>
+              <span class="unit-label">%</span>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeAddProductModal()">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Guardar Cosmético</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Actualizar Precio de Cosmético -->
+  <div id="editProductPriceModal" class="modal-overlay" style="display:none;">
+    <div class="modal-content" style="max-width:380px;">
+      <div class="modal-header">
+        <h3>💶 Actualizar Tarifa Proveedor</h3>
+        <button class="btn btn-secondary btn-sm" onclick="closeEditProductPriceModal()">✕</button>
+      </div>
+      <form onsubmit="handleUpdateProductPriceSubmit(event)">
+        <input type="hidden" id="editProductId">
+        <div class="modal-body">
+          <p id="editProductLabel" style="font-weight:600; margin-bottom:0.75rem; font-size:0.9rem;"></p>
+          <div class="form-group">
+            <label class="form-label" for="editProductNewPrice">Nuevo Precio Envase (€)</label>
+            <div class="input-with-unit">
+              <input type="number" id="editProductNewPrice" min="0" step="0.01" required>
+              <span class="unit-label">€</span>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeEditProductPriceModal()">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Actualizar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Editar Categoría de Personal -->
+  <div id="editWorkerModal" class="modal-overlay" style="display:none;">
+    <div class="modal-content" style="max-width:420px;">
+      <div class="modal-header">
+        <h3>✏️ Editar Categoría de Personal</h3>
+        <button class="btn btn-secondary btn-sm" onclick="closeEditWorkerModal()">✕</button>
+      </div>
+      <form onsubmit="handleUpdateWorkerSubmit(event)">
+        <input type="hidden" id="editWorkerId">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label" for="editWorkerCategoryName">Categoría / Puesto</label>
+            <input type="text" id="editWorkerCategoryName" class="center-select" style="width:100%; padding:0.5rem;" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="editWorkerMonthlyCost">Coste Mensual Empresa (€/mes)</label>
+            <div class="input-with-unit">
+              <input type="number" id="editWorkerMonthlyCost" min="0" step="any" required>
+              <span class="unit-label">€/mes</span>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeEditWorkerModal()">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Editar Cosmético Completo -->
+  <div id="editProductModal" class="modal-overlay" style="display:none;">
+    <div class="modal-content" style="max-width:440px;">
+      <div class="modal-header">
+        <h3>✏️ Editar Producto Cosmético</h3>
+        <button class="btn btn-secondary btn-sm" onclick="closeEditProductModal()">✕</button>
+      </div>
+      <form onsubmit="handleUpdateProductFullSubmit(event)">
+        <input type="hidden" id="editProductFullId">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label" for="editProductFullName">Nombre del Cosmético</label>
+            <input type="text" id="editProductFullName" class="center-select" style="width:100%; padding:0.5rem;" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="editProductFullPrice">Precio Compra Envase (€)</label>
+            <div class="input-with-unit">
+              <input type="number" id="editProductFullPrice" min="0" step="0.01" required>
+              <span class="unit-label">€</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="editProductFullCapacity">Capacidad / Unidades Envase</label>
+            <div class="input-with-unit">
+              <input type="number" id="editProductFullCapacity" min="1" step="1" required>
+              <span class="unit-label">cant</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="editProductFullUnit">Unidad de Medida</label>
+            <select id="editProductFullUnit" class="center-select" style="width:100%; padding:0.5rem;">
+              <option value="0">Mililitros (ml)</option>
+              <option value="1">Gramos (g)</option>
+              <option value="2">Unidades (ud / vial / ampolla)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="editProductFullWaste">Merma Estimada (%)</label>
+            <div class="input-with-unit">
+              <input type="number" id="editProductFullWaste" min="0" max="50" step="1" required>
+              <span class="unit-label">%</span>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeEditProductModal()">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <!-- Modal: Compuerta Freemium y Actualización a Premium -->
   <div id="upgradeModal" class="modal-overlay" style="display:none;">
@@ -258,6 +608,72 @@
           <button type="submit" class="btn btn-primary">Guardar Tratamiento</button>
         </div>
       </form>
+    </div>
+  </div>
+
+  <!-- Modal: Histórico de Auditoría Criptográfica (ADR-004, Punto 3) -->
+  <div id="auditModal" class="modal-overlay" style="display:none;">
+    <div class="modal-content" style="max-width:850px;">
+      <div class="modal-header">
+        <h3>📜 Histórico Criptográfico de Modificaciones (SHA-256)</h3>
+        <button class="btn btn-secondary btn-sm" onclick="closeAuditModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem; flex-wrap:wrap; gap:0.5rem;">
+          <p style="font-size:0.85rem; color:var(--text-muted); margin:0;">
+            Registro encadenado inmutable (SEC-REQ-AUDIT-IMMUTABLE-001). Hash previo garantiza no-repudio.
+          </p>
+          <div style="display:flex; align-items:center; gap:0.5rem;">
+            <label for="auditCenterSelect" style="font-size:0.8rem; font-weight:600; margin:0;">Centro:</label>
+            <select id="auditCenterSelect" class="form-control" style="font-size:0.8rem; padding:0.25rem 0.5rem; width:auto;" onchange="fetchAuditHistory()">
+              <option value="">Centro actual</option>
+              <option value="all">🌐 Todos los centros</option>
+            </select>
+          </div>
+        </div>
+        <div class="table-responsive" style="max-height:350px; overflow-y:auto;">
+          <table style="font-size:0.8rem;">
+            <thead>
+              <tr>
+                <th>Fecha (UTC)</th>
+                <th>Acción / Recurso</th>
+                <th>Val. Anterior</th>
+                <th>Val. Nuevo</th>
+                <th>Hash SHA-256 Encadenado</th>
+              </tr>
+            </thead>
+            <tbody id="auditTableBody">
+              <tr><td colspan="5" style="text-align:center; color:var(--text-muted);">Cargando histórico...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="fetchAuditHistory()">🔄 Actualizar</button>
+        <button class="btn btn-primary" onclick="closeAuditModal()">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Logs y Trazas del Sistema (Punto 8) -->
+  <div id="logsModal" class="modal-overlay" style="display:none;">
+    <div class="modal-content" style="max-width:900px;">
+      <div class="modal-header">
+        <h3>🔍 Consola de Logs y Trazas en Tiempo Real</h3>
+        <button class="btn btn-secondary btn-sm" onclick="closeLogsModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
+          <span style="font-size:0.85rem; color:var(--text-muted);">Buffer circular en memoria de eventos, llamadas HTTP y trazas (QR-OBSERVABILITY-001).</span>
+          <button class="btn btn-secondary btn-sm" onclick="fetchSystemLogs()">🔄 Refrescar Logs</button>
+        </div>
+        <div id="logsConsole" style="background:#0f172a; color:#f8fafc; font-family:Consolas, Monaco, monospace; font-size:0.75rem; padding:1rem; border-radius:6px; max-height:400px; overflow-y:auto; line-height:1.4;">
+          <div style="color:#94a3b8;">Cargando trazas del sistema...</div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" onclick="closeLogsModal()">Cerrar</button>
+      </div>
     </div>
   </div>
 

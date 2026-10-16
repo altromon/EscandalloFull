@@ -191,6 +191,37 @@ public class RedStubSubscriptionManager : ISubscriptionManager
         return $"https://checkout.stripe.com/c/pay/cs_test_{centerId}_{DateTimeOffset.UtcNow.ToUnixTimeSeconds()}";
     }
 
+    public SubscriptionStatus UpgradeToPremium(string centerId)
+    {
+        lock (SyncLock)
+        {
+            var status = GetStatus(centerId);
+            status.Plan = PlanType.Premium;
+            status.MaxAllowedEscandallos = int.MaxValue;
+            return status;
+        }
+    }
+
+    public SubscriptionStatus CancelSubscription(string centerId)
+    {
+        lock (SyncLock)
+        {
+            var status = GetStatus(centerId);
+            status.Plan = PlanType.Free;
+            status.MaxAllowedEscandallos = 2;
+            return status;
+        }
+    }
+
+    public void ResetActiveCount(string centerId)
+    {
+        lock (SyncLock)
+        {
+            var status = GetStatus(centerId);
+            status.ActiveEscandallos = 0;
+        }
+    }
+
     public bool ProcessWebhook(string rawPayload, string signatureHeader)
     {
         if (string.IsNullOrWhiteSpace(signatureHeader) || string.IsNullOrWhiteSpace(rawPayload))
@@ -352,6 +383,40 @@ public class RedStubAuthGateway : IAuthGateway
             Role = user.Role,
             ExpiresIn = 3600,
             Token = $"session.jwt.{user.UserId}.{defaultCenter}.valid"
+        };
+    }
+
+    public AuthSession Register(string email, string password, string? centerName = null, RoleType role = RoleType.User)
+    {
+        string userId = $"usr-{Guid.NewGuid():N}";
+        string centerId = $"ctr-{Guid.NewGuid():N}";
+        var user = new UserRecord
+        {
+            UserId = userId,
+            Email = email,
+            Password = password,
+            Role = role,
+            TenantId = "ten-001",
+            AuthorizedCenterIds = new() { centerId }
+        };
+        Users[email] = user;
+        return Login(email, password);
+    }
+
+    public CenterMembership CreateCenter(string userId, string centerName)
+    {
+        var user = Users.Values.FirstOrDefault(u => u.UserId == userId);
+        if (user == null)
+            throw new KeyNotFoundException("Usuario no encontrado.");
+
+        string centerId = $"ctr-{Guid.NewGuid():N}";
+        user.AuthorizedCenterIds.Add(centerId);
+        return new CenterMembership
+        {
+            CenterId = centerId,
+            Name = centerName,
+            Role = user.Role,
+            IsPlanPremium = false
         };
     }
 
@@ -538,6 +603,17 @@ public class RedStubEscandalloRepository : IEscandalloRepository
             return list.RemoveAll(x => x.Id == id) > 0;
         }
         return false;
+    }
+
+    public int Clear(string centerId)
+    {
+        if (Services.TryGetValue(centerId, out var list))
+        {
+            int count = list.Count;
+            list.Clear();
+            return count;
+        }
+        return 0;
     }
 }
 

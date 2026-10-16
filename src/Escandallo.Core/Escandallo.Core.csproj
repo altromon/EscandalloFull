@@ -7,4 +7,8 @@
     <RootNamespace>Escandallo.Core</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="QuestPDF" Version="2026.9.1" />
+  </ItemGroup>
+
 </Project>

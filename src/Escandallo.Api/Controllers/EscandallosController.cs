@@ -13,19 +13,22 @@ public class EscandallosController : ControllerBase
     private readonly ISubscriptionManager _subscriptionManager;
     private readonly IEscandalloRepository _repository;
     private readonly ICostConfigurationRepository _costConfigRepository;
+    private readonly IAuditTrailRepository? _auditTrailRepo;
 
     public EscandallosController(
         IEscandalloCostEngine costEngine,
         IMarginCalculator marginCalculator,
         ISubscriptionManager subscriptionManager,
         IEscandalloRepository repository,
-        ICostConfigurationRepository? costConfigRepository = null)
+        ICostConfigurationRepository? costConfigRepository = null,
+        IAuditTrailRepository? auditTrailRepo = null)
     {
         _costEngine = costEngine;
         _marginCalculator = marginCalculator;
         _subscriptionManager = subscriptionManager;
         _repository = repository;
         _costConfigRepository = costConfigRepository ?? new CostConfigurationRepository();
+        _auditTrailRepo = auditTrailRepo;
     }
 
     public record CalculateEscandalloDto(
@@ -96,6 +99,16 @@ public class EscandallosController : ControllerBase
 
         var escandallo = BuildEscandalloFromRequest(newId, request, targetCenter);
         _repository.Save(targetCenter, escandallo);
+        _auditTrailRepo?.RecordEntry(new AuditEntry
+        {
+            Id = Guid.NewGuid().ToString(),
+            CenterId = targetCenter,
+            ActorId = "User",
+            TimestampUtc = DateTime.UtcNow,
+            PreviousValue = 0,
+            NewValue = escandallo.AppliedPvr,
+            ChangeType = $"CREATE_SERVICE:{escandallo.ServiceName}"
+        });
         return StatusCode(201, escandallo);
     }
 
@@ -121,6 +134,16 @@ public class EscandallosController : ControllerBase
 
         var clone = CloneService(newId, original);
         _repository.Save(targetCenter, clone);
+        _auditTrailRepo?.RecordEntry(new AuditEntry
+        {
+            Id = Guid.NewGuid().ToString(),
+            CenterId = targetCenter,
+            ActorId = "User",
+            TimestampUtc = DateTime.UtcNow,
+            PreviousValue = original.AppliedPvr,
+            NewValue = clone.AppliedPvr,
+            ChangeType = $"DUPLICATE_SERVICE:{clone.ServiceName}"
+        });
         return StatusCode(201, clone);
     }
 
@@ -158,7 +181,52 @@ public class EscandallosController : ControllerBase
         }
 
         _repository.Save(targetCenter, escandallo);
+        _auditTrailRepo?.RecordEntry(new AuditEntry
+        {
+            Id = Guid.NewGuid().ToString(),
+            CenterId = targetCenter,
+            ActorId = "User",
+            TimestampUtc = DateTime.UtcNow,
+            PreviousValue = escandallo.IsActive ? 0 : 1,
+            NewValue = escandallo.IsActive ? 1 : 0,
+            ChangeType = $"TOGGLE_STATUS:{escandallo.ServiceName}"
+        });
         return Ok(escandallo);
+    }
+
+    [HttpDelete("{id}")]
+    public ActionResult Delete([FromRoute] string id, [FromHeader(Name = "X-Center-Id")] string? centerId)
+    {
+        string targetCenter = centerId ?? "ctr-madrid-1";
+        var escandallo = _repository.GetById(targetCenter, id);
+        if (escandallo == null)
+        {
+            return NotFound(new { message = $"Escandallo {id} no encontrado." });
+        }
+
+        bool deleted = _repository.Delete(targetCenter, id);
+        if (!deleted)
+        {
+            return NotFound(new { message = $"No se pudo eliminar el escandallo {id}." });
+        }
+
+        if (escandallo.IsActive)
+        {
+            _subscriptionManager.DecrementActiveEscandallos(targetCenter);
+        }
+
+        _auditTrailRepo?.RecordEntry(new AuditEntry
+        {
+            Id = Guid.NewGuid().ToString(),
+            CenterId = targetCenter,
+            ActorId = "User",
+            TimestampUtc = DateTime.UtcNow,
+            PreviousValue = escandallo.AppliedPvr,
+            NewValue = 0,
+            ChangeType = $"DELETE_SERVICE:{escandallo.ServiceName}"
+        });
+
+        return NoContent();
     }
 
     private CompleteEscandallo BuildEscandalloFromRequest(string newId, CreateEscandalloRequest request, string targetCenter)

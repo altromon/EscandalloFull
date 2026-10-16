@@ -22,6 +22,9 @@ public class CenterCostParameters
 {
     public decimal MonthlyOpeningHours { get; set; } = 176m; // Unit: h/mes
     public decimal MonthlyOpeningMinutes => MonthlyOpeningHours * 60m; // Unit: min/mes (10,560)
+    public decimal LocalRent { get; set; } = 335.00m;
+    public decimal Supplies { get; set; } = 100.00m;
+    public decimal GeneralCabinConsumables { get; set; } = 440.00m;
     public decimal MonthlyOverheadCost { get; set; } // Unit: EUR/mes
     public decimal OverheadCostPerMinute => MonthlyOpeningMinutes > 0 ? MonthlyOverheadCost / MonthlyOpeningMinutes : 0m;
 }
