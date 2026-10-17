@@ -1,0 +1,36 @@
+{
+  "releaseBranch": "main",
+  "baseBranch": "4b825dc642cb6eb9a060e54bf8d69288fbee4904",
+  "generatedAt": "2026-10-17T04:08:26.596Z",
+  "totalCommits": 4,
+  "totalLinesAdded": 20803,
+  "totalLinesDeleted": 243,
+  "totalKloc": 21.05,
+  "totalBugs": 0,
+  "globalDefectDensity": 0,
+  "totalTimeSeconds": 10642,
+  "totalTokens": 746610,
+  "totalCostUsd": 4.0317,
+  "reworkTimeSeconds": 0,
+  "reworkTokens": 0,
+  "reworkCostUsd": 0,
+  "reworkTimePercent": 0,
+  "reworkTokensPercent": 0,
+  "reworkCostPercent": 0,
+  "authorStats": [
+    {
+      "authorOrModel": "gemini-3.8-flash",
+      "isAgent": true,
+      "commits": 4,
+      "linesAdded": 20803,
+      "linesDeleted": 243,
+      "klocProduced": 21.05,
+      "bugsInjected": 0,
+      "defectInjectionRate": 0,
+      "totalTimeSeconds": 10642,
+      "totalTokens": 746610,
+      "estimatedCostUsd": 4.0317
+    }
+  ],
+  "bugList": []
+}
