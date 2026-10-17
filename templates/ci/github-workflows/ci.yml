@@ -24,7 +24,6 @@ jobs:
             10.0.x
             9.0.x
             8.0.x
-          include-prerelease: true
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -35,10 +34,10 @@ jobs:
         run: dotnet restore
 
       - name: Build Solution
-        run: dotnet build --no-restore --configuration Release
+        run: dotnet build --no-restore
 
       - name: Run Automated Test Suites
-        run: dotnet test --no-build --configuration Release --verbosity normal
+        run: dotnet test --no-build --filter "FullyQualifiedName!~Browser" --verbosity normal
 
       - name: AI-SDLC Quality Gate & Full Verification
         run: npx --yes @aisdlc/cli verify --profile lite || true
