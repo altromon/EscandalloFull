@@ -35,24 +35,10 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 10
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'pnpm'
-
-      - name: Install Dependencies
-        run: |
-          pnpm install --frozen-lockfile
-          pnpm approve-builds --all
-
-      - name: Build Packages
-        run: pnpm run build
 
       - name: Detect and Integrate SDD Change
         id: integrate
@@ -62,7 +48,7 @@ jobs:
           PR_BODY: ${{ github.event.pull_request.body }}
           MANUAL_CHANGE_ID: ${{ github.event.inputs.change_id }}
         run: |
-          npx @aisdlc/cli sdd integrate --auto || true
+          npx --yes @aisdlc/cli sdd integrate --auto || true
 
       - name: Commit and Push Canonical Baseline Changes
         run: |
