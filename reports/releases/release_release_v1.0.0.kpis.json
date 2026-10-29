@@ -1,23 +1,36 @@
 {
   "releaseBranch": "release/v1.0.0",
   "baseBranch": "main",
-  "generatedAt": "2026-10-29T07:03:35.235Z",
-  "totalCommits": 6,
-  "totalLinesAdded": 6168,
-  "totalLinesDeleted": 151,
-  "totalKloc": 6.32,
-  "totalBugs": 0,
-  "globalDefectDensity": 0,
-  "totalTimeSeconds": 1163,
-  "totalTokens": 70245,
-  "totalCostUsd": 0.3793,
-  "reworkTimeSeconds": 0,
-  "reworkTokens": 0,
-  "reworkCostUsd": 0,
-  "reworkTimePercent": 0,
-  "reworkTokensPercent": 0,
-  "reworkCostPercent": 0,
+  "generatedAt": "2026-10-29T07:24:04.331Z",
+  "totalCommits": 7,
+  "totalLinesAdded": 7075,
+  "totalLinesDeleted": 972,
+  "totalKloc": 8.05,
+  "totalBugs": 1,
+  "globalDefectDensity": 0.12,
+  "totalTimeSeconds": 2057,
+  "totalTokens": 133225,
+  "totalCostUsd": 0.7194,
+  "reworkTimeSeconds": 894,
+  "reworkTokens": 62980,
+  "reworkCostUsd": 0.3401,
+  "reworkTimePercent": 43.46,
+  "reworkTokensPercent": 47.27,
+  "reworkCostPercent": 47.28,
   "authorStats": [
+    {
+      "authorOrModel": "gemini-3.8-flash",
+      "isAgent": true,
+      "commits": 5,
+      "linesAdded": 7075,
+      "linesDeleted": 972,
+      "klocProduced": 8.05,
+      "bugsInjected": 1,
+      "defectInjectionRate": 0.12,
+      "totalTimeSeconds": 1817,
+      "totalTokens": 133225,
+      "estimatedCostUsd": 0.7194
+    },
     {
       "authorOrModel": "Human (Alfonso Troyano Montes)",
       "isAgent": false,
@@ -30,20 +43,15 @@
       "totalTimeSeconds": 240,
       "totalTokens": 0,
       "estimatedCostUsd": 0
-    },
-    {
-      "authorOrModel": "gemini-3.8-flash",
-      "isAgent": true,
-      "commits": 4,
-      "linesAdded": 6168,
-      "linesDeleted": 151,
-      "klocProduced": 6.32,
-      "bugsInjected": 0,
-      "defectInjectionRate": 0,
-      "totalTimeSeconds": 923,
-      "totalTokens": 70245,
-      "estimatedCostUsd": 0.3793
     }
   ],
-  "bugList": []
+  "bugList": [
+    {
+      "sha": "9ee9671b",
+      "subject": "fix(quality): resolve open quality gate violations, schemas and BDD traceability",
+      "author": "gemini-3.8-flash",
+      "timeSeconds": 894,
+      "tokens": 62980
+    }
+  ]
 }
