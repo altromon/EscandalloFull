@@ -5,7 +5,7 @@ title: "Control de Cuota Freemium y Pasarela de Suscripción Stripe"
 status: "draft"
 version: "1.0.0"
 primary-actor: "ACT-USER-001"
-secondary-actors: []
+supporting-actors: []
 ---
 
 # Use Case: Control de Cuota Freemium y Pasarela de Suscripción Stripe (`UC-SUBSCRIPTION-GATE-001`)

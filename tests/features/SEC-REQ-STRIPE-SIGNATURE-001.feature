@@ -1,9 +1,18 @@
-@SEC-REQ-STRIPE-SIGNATURE-001 @security @mitigation @idempotence @automated @regression
+# ==============================================================================
+# AUTO-GENERADO POR AI-SDLC (Cucumber Integration)
+# Origen: specs/security/SEC-REQ-STRIPE-SIGNATURE-001.md
+# ID Requerimiento: SEC-REQ-STRIPE-SIGNATURE-001
+# Versión: 1.0.0
+# NO EDITAR MANUALMENTE: Cualquier cambio debe realizarse en el Markdown origen.
+# ==============================================================================
+
+@SEC-REQ-STRIPE-SIGNATURE-001 @security @mitigation
 Feature: Verificación Criptográfica de Firma HMAC-SHA256 en Webhooks Stripe
   Como enclave de integración de pagos de Escandallo Estética
   Quiero rechazar eventos de Stripe falsificados, sin firmar o repetidos
   Para evitar la activación fraudulenta de cuota Premium y eludir la pasarela de pago
 
+  @security @mitigation
   Scenario: Rechazo de webhook de Stripe con firma criptográfica ausente o inválida
     Given el endpoint receptor de webhooks "/api/v1/billing/stripe-webhook" está activo
     When un atacante envía un evento "checkout.session.completed" con cabecera "Stripe-Signature" inválida o vacía
@@ -12,6 +21,7 @@ Feature: Verificación Criptográfica de Firma HMAC-SHA256 en Webhooks Stripe
     And no ejecuta ninguna actualización en la suscripción del centro especificado
     And registra en logs de seguridad el intento de inyección de webhook espurio
 
+  @security @mitigation
   Scenario Outline: Mitigación de ataques de repetición y eventos duplicados
     Given un evento válido de Stripe recibido con identificador <event_id> y timestamp <timestamp_diferencia>
     When el webhook es procesado por el enclave de pagos

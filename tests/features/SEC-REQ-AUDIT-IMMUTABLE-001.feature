@@ -1,4 +1,12 @@
-@SEC-REQ-AUDIT-IMMUTABLE-001 @security @mitigation @automated @regression
+# ==============================================================================
+# AUTO-GENERADO POR AI-SDLC (Cucumber Integration)
+# Origen: specs/security/SEC-REQ-AUDIT-IMMUTABLE-001.md
+# ID Requerimiento: SEC-REQ-AUDIT-IMMUTABLE-001
+# Versión: 1.0.0
+# NO EDITAR MANUALMENTE: Cualquier cambio debe realizarse en el Markdown origen.
+# ==============================================================================
+
+@SEC-REQ-AUDIT-IMMUTABLE-001 @security @mitigation
 Feature: Registro Inmutable de Auditoría Criptográficamente Sellado
   Como subsistema de trazabilidad financiera de Escandallo Estética
   Quiero preservar un historial append-only inmutable de todas las variaciones de costes

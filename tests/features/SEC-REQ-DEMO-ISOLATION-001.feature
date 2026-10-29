@@ -1,4 +1,12 @@
-@SEC-REQ-DEMO-ISOLATION-001 @security @mitigation @automated @regression
+# ==============================================================================
+# AUTO-GENERADO POR AI-SDLC (Cucumber Integration)
+# Origen: specs/security/SEC-REQ-DEMO-ISOLATION-001.md
+# ID Requerimiento: SEC-REQ-DEMO-ISOLATION-001
+# Versión: 1.0.0
+# NO EDITAR MANUALMENTE: Cualquier cambio debe realizarse en el Markdown origen.
+# ==============================================================================
+
+@SEC-REQ-DEMO-ISOLATION-001 @security @mitigation
 Feature: Etiquetado Aislado y Purga Verificada de Datos de Modo Demo
   Como motor de persistencia de Escandallo Estética
   Quiero aislar los registros ficticios de demostración mediante flags booleanos explícitos

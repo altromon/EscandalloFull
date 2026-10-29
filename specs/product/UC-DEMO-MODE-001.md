@@ -5,7 +5,7 @@ title: "Activación, Exploración y Limpieza de Datos en Modo Demo"
 status: "draft"
 version: "1.0.0"
 primary-actor: "ACT-USER-001"
-secondary-actors: []
+supporting-actors: []
 ---
 
 # Use Case: Activación, Exploración y Limpieza de Datos en Modo Demo (`UC-DEMO-MODE-001`)

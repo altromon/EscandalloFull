@@ -4,7 +4,7 @@ type: "business-rule"
 title: "Aislamiento de Datos de Ejemplo y Restricción a Modo Demo"
 status: "draft"
 version: "1.0.0"
-category: "data-governance"
+enforcement-level: "strict-invariant"
 ---
 
 # Business Rule: Aislamiento de Datos de Ejemplo y Restricción a Modo Demo (`BR-DEMO-DATA-001`)

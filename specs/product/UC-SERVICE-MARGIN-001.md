@@ -5,7 +5,7 @@ title: "Revisión Visual de Rentabilidad y Semáforo de Colores"
 status: "draft"
 version: "1.0.0"
 primary-actor: "ACT-USER-001"
-secondary-actors:
+supporting-actors:
   - "ACT-GUEST-001"
 ---
 

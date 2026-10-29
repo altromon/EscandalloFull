@@ -5,7 +5,7 @@ title: "Autenticación Multi-inquilino y Selección de Centro"
 status: "draft"
 version: "1.0.0"
 primary-actor: "ACT-USER-001"
-secondary-actors:
+supporting-actors:
   - "ACT-GUEST-001"
 ---
 

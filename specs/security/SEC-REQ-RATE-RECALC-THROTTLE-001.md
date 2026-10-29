@@ -14,8 +14,8 @@ compliance-references:
 acceptance-format: "gherkin"
 cucumber-tags:
   - "@SEC-REQ-RATE-RECALC-THROTTLE-001"
-  - "@security"
-  - "@mitigation"
+  - "@automated"
+  - "@regression"
 ---
 
 # Security Requirement: Rate Limiting en Recálculo en Cascada (`SEC-REQ-RATE-RECALC-THROTTLE-001`)

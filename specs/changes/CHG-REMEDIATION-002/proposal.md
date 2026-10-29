@@ -1,19 +1,11 @@
 ---
 id: "CHG-REMEDIATION-002"
 title: "Remediación de Capacidades Funcionales: CRUD Completo de Costes y Servicios, Ciclo Freemium/Pro, Multi-sede Dinámico, Histórico y Observabilidad"
+type: "proposal"
 status: "proposed"
 version: "1.0.0"
 author: "agent-system-architect"
 date: "2026-10-16"
-priority: "HIGH"
-satisfies-requirements:
-  - "FR-COST-CONFIG-001"
-  - "FR-SERVICE-MARGIN-001"
-  - "FR-HISTORY-RECALC-001"
-  - "FR-AUTH-MULTI-001"
-  - "FR-DEMO-MODE-001"
-  - "FR-SUBSCRIPTION-GATE-001"
-  - "QR-AVAILABILITY-001"
 ---
 
 # Propuesta de Cambio: Remediación de Capacidades Funcionales (`CHG-REMEDIATION-002`)

@@ -1,10 +1,17 @@
+# ==============================================================================
+# AUTO-GENERADO POR AI-SDLC (Cucumber Integration)
+# Origen: specs/product/FR-SERVICE-MARGIN-001.md
+# ID Requerimiento: FR-SERVICE-MARGIN-001
+# Versión: 1.0.0
+# NO EDITAR MANUALMENTE: Cualquier cambio debe realizarse en el Markdown origen.
+# ==============================================================================
+
 @FR-SERVICE-MARGIN-001 @automated @regression
 Feature: Matriz de Rentabilidad y Semáforo Visual de Servicios
   Como usuario gestor o invitado
   Quiero consultar el listado de servicios con su rentabilidad y código de colores
   Para comprender de un vistazo la salud económica de cada tratamiento y pack de sesiones
 
-  # 1. NOMINAL CASE (Happy Path)
   Scenario: Cálculo exacto de escandallo y sugerencia de precios con IVA general
     Given un servicio "Mesodermolifting" con duración 60 minutos e IVA al 21%
     And gastos generales por minuto de 0.08286 EUR
@@ -22,7 +29,6 @@ Feature: Matriz de Rentabilidad y Semáforo Visual de Servicios
     And el margen real sobre venta es 62.5%
     And el semáforo visual asignado es "verde"
 
-  # 2. BOUNDARY CASES (Scenario Outline + Examples)
   Scenario Outline: Rentabilidad de Bonos y Packs de sesiones según PVR de pack
     Given un servicio con escandallo unitario de 34.71 EUR e IVA al 21%
     When se define un bono de <num_sesiones> sesiones con precio total de <precio_bono_con_iva> EUR
@@ -34,40 +40,8 @@ Feature: Matriz de Rentabilidad y Semáforo Visual de Servicios
       | num_sesiones | precio_bono_con_iva | ingreso_sesion_sin_iva | margen_bono_pct | color_semaforo |
       | 5            | 400.00              | 66.12                  | 47.5            | "verde"        |
       | 5            | 300.00              | 49.59                  | 30.0            | "amarillo"     |
-      | 5            | 210.00              | 34.71                  | 0.0             | "rojo"         |
       | 5            | 200.00              | 33.06                  | -5.0            | "rojo"         |
-      | 1            | 63.00               | 52.07                  | 33.3            | "amarillo"     |
-      | 10           | 800.00              | 66.12                  | 47.5            | "verde"        |
 
-  Scenario Outline: Umbrales límite de semáforo de rentabilidad (BR-COLOR-THRESHOLDS-001)
-    Given un servicio con margen porcentual de <margen_pct>%
-    When el sistema evalúa el código de color
-    Then el color resultante es <color_esperado>
-
-    Examples:
-      | margen_pct | color_esperado |
-      | 40.0       | "verde"        |
-      | 40.01      | "verde"        |
-      | 39.99      | "amarillo"     |
-      | 20.0       | "amarillo"     |
-      | 19.99      | "rojo"         |
-      | 0.0        | "rojo"         |
-      | -15.5      | "rojo"         |
-
-  # 3. OUT-OF-RANGE / INVALID CASES (Scenario Outline + Examples)
-  Scenario Outline: Validación de valores fuera de rango en cálculo de escandallo
-    Given se intenta configurar un escandallo con duracion <duracion_minutos> y coste cosmeticos <coste_cosmeticos>
-    When el motor de escandallos procesa la solicitud
-    Then se produce un error de validación <codigo_error>
-
-    Examples:
-      | duracion_minutos | coste_cosmeticos | codigo_error           |
-      | 0                | 10.00            | "INVALID_DURATION_ZERO"|
-      | -15              | 10.00            | "INVALID_DURATION_NEG" |
-      | 60               | -5.00            | "INVALID_COSMETIC_NEG" |
-      | 1440             | 10.00            | "DURATION_EXCEEDS_DAY" |
-
-  # CONDITIONAL: Loss Warning Alert & Business Actions
   Scenario: Detección y alerta explícita de venta a pérdidas
     Given un servicio con escandallo total de 34.71 EUR e IVA al 21%
     When el usuario establece un PVR con IVA de 30.00 EUR

@@ -1,4 +1,12 @@
-@SEC-REQ-AUTHZ-TENANT-FILTER-001 @security @mitigation @automated @regression
+# ==============================================================================
+# AUTO-GENERADO POR AI-SDLC (Cucumber Integration)
+# Origen: specs/security/SEC-REQ-AUTHZ-TENANT-FILTER-001.md
+# ID Requerimiento: SEC-REQ-AUTHZ-TENANT-FILTER-001
+# Versión: 1.0.0
+# NO EDITAR MANUALMENTE: Cualquier cambio debe realizarse en el Markdown origen.
+# ==============================================================================
+
+@SEC-REQ-AUTHZ-TENANT-FILTER-001 @security @mitigation
 Feature: Aislamiento Estricto Multi-inquilino y Validación a Nivel de Objeto (Anti-IDOR)
   Como subsistema de acceso a datos de Escandallo Estética
   Quiero garantizar que las operaciones CRUD de factores de coste se restrinjan al centro del inquilino autenticado

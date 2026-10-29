@@ -4,7 +4,7 @@ type: "business-rule"
 title: "Censura Estricta de Costes Sensibles para Invitados"
 status: "draft"
 version: "1.0.0"
-category: "security-privacy"
+enforcement-level: "strict-invariant"
 ---
 
 # Business Rule: Censura Estricta de Costes Sensibles para Invitados (`BR-GUEST-CENSOR-001`)

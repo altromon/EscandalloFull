@@ -4,7 +4,7 @@ type: "actor"
 title: "Usuario Gestor / Propietario del Centro"
 status: "draft"
 version: "1.0.0"
-role-category: "business-user"
+role-type: "human-user"
 ---
 
 # Actor: Usuario Gestor / Propietario (`ACT-USER-001`)

@@ -2,7 +2,7 @@
 id: MAN-USER-001
 type: user-manual
 title: "Manual de Usuario: Escandallo Estética - Rentabilidad y Fijación de Precios"
-status: draft
+status: active
 version: "1.0.0"
 schema-version: "1.0"
 applies-to-version: "v1.0.0"

@@ -5,7 +5,7 @@ title: "Exportación Ejecutiva de Escandallos en PDF y XLSX"
 status: "draft"
 version: "1.0.0"
 primary-actor: "ACT-USER-001"
-secondary-actors: []
+supporting-actors: []
 ---
 
 # Use Case: Exportación Ejecutiva de Escandallos en PDF y XLSX (`UC-EXPORT-EXEC-001`)

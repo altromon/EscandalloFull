@@ -1,22 +1,11 @@
 ---
 id: "CHG-REMEDIATION-001"
 title: "Remediación Integral: Autenticación de Centros, Configuración de Costes, Host Unificado y Exportación PDF Real"
+type: "proposal"
 status: "proposed"
 version: "1.0.0"
 author: "agent-system-architect"
 date: "2026-10-16"
-priority: "CRITICAL"
-satisfies-requirements:
-  - "FR-AUTH-MULTI-001"
-  - "FR-COST-CONFIG-001"
-  - "FR-SERVICE-MARGIN-001"
-  - "FR-EXPORT-EXEC-001"
-  - "SEC-REQ-AUTH-MEMBER-001"
-  - "SEC-REQ-AUTHZ-TENANT-FILTER-001"
-  - "SEC-REQ-EXPORT-SANITIZATION-001"
-derives-from:
-  - "reports/qa-bias-audit-and-remediation.md"
-  - "specs/product/user-design-feedback.md"
 ---
 
 # Propuesta de Cambio: Remediación Integral (`CHG-REMEDIATION-001`)

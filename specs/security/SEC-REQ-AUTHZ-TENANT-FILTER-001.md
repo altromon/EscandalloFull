@@ -14,8 +14,8 @@ compliance-references:
 acceptance-format: "gherkin"
 cucumber-tags:
   - "@SEC-REQ-AUTHZ-TENANT-FILTER-001"
-  - "@security"
-  - "@mitigation"
+  - "@automated"
+  - "@regression"
 ---
 
 # Security Requirement: Aislamiento Multi-inquilino a Nivel de Objeto (`SEC-REQ-AUTHZ-TENANT-FILTER-001`)
