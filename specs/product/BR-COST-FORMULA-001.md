@@ -4,7 +4,7 @@ type: "business-rule"
 title: "Fórmula Canónica de Escandallo de Servicio de Estética"
 status: "draft"
 version: "1.0.0"
-category: "financial-calculation"
+enforcement-level: "strict-invariant"
 ---
 
 # Business Rule: Fórmula Canónica de Escandallo de Servicio de Estética (`BR-COST-FORMULA-001`)

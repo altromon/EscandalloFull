@@ -1,4 +1,12 @@
-@SEC-REQ-QUOTA-BACKEND-ENFORCE-001 @security @mitigation @automated @regression
+# ==============================================================================
+# AUTO-GENERADO POR AI-SDLC (Cucumber Integration)
+# Origen: specs/security/SEC-REQ-QUOTA-BACKEND-ENFORCE-001.md
+# ID Requerimiento: SEC-REQ-QUOTA-BACKEND-ENFORCE-001
+# Versión: 1.0.0
+# NO EDITAR MANUALMENTE: Cualquier cambio debe realizarse en el Markdown origen.
+# ==============================================================================
+
+@SEC-REQ-QUOTA-BACKEND-ENFORCE-001 @security @mitigation
 Feature: Validación Atómica Transaccional de Cuota Freemium
   Como subsistema de monetización y autorización de Escandallo Estética
   Quiero hacer cumplir de forma atómica el límite de 2 escandallos por centro gratuito

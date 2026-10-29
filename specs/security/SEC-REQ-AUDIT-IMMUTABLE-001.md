@@ -14,8 +14,8 @@ compliance-references:
 acceptance-format: "gherkin"
 cucumber-tags:
   - "@SEC-REQ-AUDIT-IMMUTABLE-001"
-  - "@security"
-  - "@mitigation"
+  - "@automated"
+  - "@regression"
 ---
 
 # Security Requirement: Registro Inmutable de Auditoría (`SEC-REQ-AUDIT-IMMUTABLE-001`)

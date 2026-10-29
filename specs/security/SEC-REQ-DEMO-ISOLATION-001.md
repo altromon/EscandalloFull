@@ -13,8 +13,8 @@ compliance-references:
 acceptance-format: "gherkin"
 cucumber-tags:
   - "@SEC-REQ-DEMO-ISOLATION-001"
-  - "@security"
-  - "@mitigation"
+  - "@automated"
+  - "@regression"
 ---
 
 # Security Requirement: Aislamiento y Purga de Modo Demo (`SEC-REQ-DEMO-ISOLATION-001`)

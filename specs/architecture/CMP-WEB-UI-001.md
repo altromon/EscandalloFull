@@ -26,7 +26,7 @@ satisfies-requirements:
 hosted-in-enclave: SEC-ENC-AUTH-GATEWAY-001
 interfaces:
   - name: "Web Browser UI & REST Consumer"
-    protocol: "GUI / Browser DOM"
+    protocol: "GUI"
     contract-spec: "specs/architecture/contracts/ui-contracts.d.ts"
 supersedes: null
 superseded-by: null

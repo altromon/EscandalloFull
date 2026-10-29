@@ -4,7 +4,7 @@ type: "actor"
 title: "Colaborador / Invitado de Centro"
 status: "draft"
 version: "1.0.0"
-role-category: "restricted-user"
+role-type: "human-user"
 ---
 
 # Actor: Colaborador / Invitado de Centro (`ACT-GUEST-001`)

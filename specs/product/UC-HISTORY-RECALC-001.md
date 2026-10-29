@@ -5,7 +5,7 @@ title: "Histórico de Modificaciones y Recálculo Automático"
 status: "draft"
 version: "1.0.0"
 primary-actor: "ACT-USER-001"
-secondary-actors: []
+supporting-actors: []
 ---
 
 # Use Case: Histórico de Modificaciones y Recálculo Automático (`UC-HISTORY-RECALC-001`)

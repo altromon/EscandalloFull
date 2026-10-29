@@ -1,6 +1,7 @@
 ---
 id: "CHG-REMEDIATION-001"
 title: "Diseño Técnico: Arquitectura Unificada, Flujo de Autenticación, Configuración de Costes y Motor PDF"
+type: "design"
 status: "proposed"
 version: "1.0.0"
 author: "agent-system-architect"

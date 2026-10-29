@@ -1,4 +1,12 @@
-@SEC-REQ-AUTH-MEMBER-001 @security @mitigation @automated @regression
+# ==============================================================================
+# AUTO-GENERADO POR AI-SDLC (Cucumber Integration)
+# Origen: specs/security/SEC-REQ-AUTH-MEMBER-001.md
+# ID Requerimiento: SEC-REQ-AUTH-MEMBER-001
+# Versión: 1.0.0
+# NO EDITAR MANUALMENTE: Cualquier cambio debe realizarse en el Markdown origen.
+# ==============================================================================
+
+@SEC-REQ-AUTH-MEMBER-001 @security @mitigation
 Feature: Validación Criptográfica de Sesión y Verificación de Membresía Multicentro
   Como subsistema de seguridad perimetral de Escandallo Estética
   Quiero rechazar intentos de selección o acceso a centros ajenos al usuario autenticado

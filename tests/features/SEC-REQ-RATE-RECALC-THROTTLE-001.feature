@@ -1,4 +1,12 @@
-@SEC-REQ-RATE-RECALC-THROTTLE-001 @security @mitigation @performance @automated @regression
+# ==============================================================================
+# AUTO-GENERADO POR AI-SDLC (Cucumber Integration)
+# Origen: specs/security/SEC-REQ-RATE-RECALC-THROTTLE-001.md
+# ID Requerimiento: SEC-REQ-RATE-RECALC-THROTTLE-001
+# Versión: 1.0.0
+# NO EDITAR MANUALMENTE: Cualquier cambio debe realizarse en el Markdown origen.
+# ==============================================================================
+
+@SEC-REQ-RATE-RECALC-THROTTLE-001 @security @mitigation
 Feature: Limitación de Tasa y Control de Concurrencia en Recálculos en Cascada
   Como núcleo de servicios de Escandallo Estética
   Quiero estrangular ráfagas de recálculos y procesar en segundo plano las actualizaciones en bloque

@@ -15,8 +15,8 @@ compliance-references:
 acceptance-format: "gherkin"
 cucumber-tags:
   - "@SEC-REQ-DATA-CENSOR-GUEST-001"
-  - "@security"
-  - "@mitigation"
+  - "@automated"
+  - "@regression"
 ---
 
 # Security Requirement: Censura de Datos para Invitados (`SEC-REQ-DATA-CENSOR-GUEST-001`)

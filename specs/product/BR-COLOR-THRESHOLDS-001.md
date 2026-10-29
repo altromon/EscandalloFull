@@ -4,7 +4,7 @@ type: "business-rule"
 title: "Umbrales y Código de Colores de Rentabilidad"
 status: "draft"
 version: "1.0.0"
-category: "visual-semantics"
+enforcement-level: "strict-invariant"
 ---
 
 # Business Rule: Umbrales y Código de Colores de Rentabilidad (`BR-COLOR-THRESHOLDS-001`)

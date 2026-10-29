@@ -4,7 +4,7 @@ type: "actor"
 title: "Mantenedor / Operador de Sistemas"
 status: "draft"
 version: "1.0.0"
-role-category: "system-operator"
+role-type: "human-user"
 ---
 
 # Actor: Mantenedor / Operador de Sistemas (`ACT-MAINTAINER-001`)

@@ -5,7 +5,7 @@ title: "Definición Paramétrica de Factores de Coste del Escandallo"
 status: "draft"
 version: "1.0.0"
 primary-actor: "ACT-USER-001"
-secondary-actors: []
+supporting-actors: []
 ---
 
 # Use Case: Definición Paramétrica de Factores de Coste del Escandallo (`UC-COST-CONFIG-001`)

@@ -1,4 +1,12 @@
-@SEC-REQ-EXPORT-SANITIZATION-001 @security @mitigation @automated @regression
+# ==============================================================================
+# AUTO-GENERADO POR AI-SDLC (Cucumber Integration)
+# Origen: specs/security/SEC-REQ-EXPORT-SANITIZATION-001.md
+# ID Requerimiento: SEC-REQ-EXPORT-SANITIZATION-001
+# Versión: 1.0.0
+# NO EDITAR MANUALMENTE: Cualquier cambio debe realizarse en el Markdown origen.
+# ==============================================================================
+
+@SEC-REQ-EXPORT-SANITIZATION-001 @security @mitigation
 Feature: Sanitización Anti-Formula Injection en XLSX y Sandboxing PDF
   Como subsistema de exportación documental de Escandallo Estética
   Quiero sanitizar campos dinámicos y aislar el entorno de renderizado

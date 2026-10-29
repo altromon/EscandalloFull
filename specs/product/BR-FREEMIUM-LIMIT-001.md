@@ -4,7 +4,7 @@ type: "business-rule"
 title: "Límite de Cuota Freemium de Escandallos por Centro"
 status: "draft"
 version: "1.0.0"
-category: "billing-monetization"
+enforcement-level: "strict-invariant"
 ---
 
 # Business Rule: Límite de Cuota Freemium de Escandallos por Centro (`BR-FREEMIUM-LIMIT-001`)

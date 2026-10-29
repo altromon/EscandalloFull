@@ -1,6 +1,7 @@
 ---
 id: "CHG-REMEDIATION-002"
 title: "Diseño Técnico: CRUD de Costes y Escandallos, Ciclo Freemium/Pro, Multi-Sede, Registro, Histórico y Observabilidad"
+type: "design"
 status: "proposed"
 version: "1.0.0"
 author: "agent-system-architect"

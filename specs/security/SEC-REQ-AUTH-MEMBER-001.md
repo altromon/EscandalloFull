@@ -14,8 +14,8 @@ compliance-references:
 acceptance-format: "gherkin"
 cucumber-tags:
   - "@SEC-REQ-AUTH-MEMBER-001"
-  - "@security"
-  - "@mitigation"
+  - "@automated"
+  - "@regression"
 ---
 
 # Security Requirement: Validación de Membresía Multicentro (`SEC-REQ-AUTH-MEMBER-001`)

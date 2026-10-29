@@ -14,8 +14,8 @@ compliance-references:
 acceptance-format: "gherkin"
 cucumber-tags:
   - "@SEC-REQ-EXPORT-SANITIZATION-001"
-  - "@security"
-  - "@mitigation"
+  - "@automated"
+  - "@regression"
 ---
 
 # Security Requirement: Sanitización en Exportaciones (`SEC-REQ-EXPORT-SANITIZATION-001`)
